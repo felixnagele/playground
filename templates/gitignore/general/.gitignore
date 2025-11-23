@@ -73,5 +73,4 @@ bytecode
 *.aux
 *.synctex.gz
 *.ctxt
-*.txt
 hs_err_pid*
