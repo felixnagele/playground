@@ -6,7 +6,8 @@
 !lib
 !rsc
 !src
-#!lib/Libraryname.jar Not sure if needed!
+# To include a specific library jar file in version control, uncomment the following line:
+#!lib/Libraryname.jar
 
 
 # *** IGNORE ***
