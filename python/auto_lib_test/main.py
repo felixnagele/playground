@@ -2,6 +2,9 @@ import requests
 
 
 def main():
+    """
+    Fetch and display GitHub API root endpoints.
+    """
     response = requests.get("https://api.github.com", timeout=10)
 
     if response.ok:
