@@ -68,7 +68,6 @@ Desktop.ini
 # OTHER
 run
 .DS_Store
-Thumbs.db
 bytecode
 *.log
 *.aux
