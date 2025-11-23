@@ -10,7 +10,7 @@ def main():
         for key, value in data.items():
             print(f"{key}: {value}")
     else:
-        print("Error:", response.status_code)
+        print(f"Error: Failed to fetch GitHub API (Status {response.status_code})")
 
 
 if __name__ == "__main__":
