@@ -2,7 +2,7 @@ import requests
 
 
 def main():
-    response = requests.get("https://api.github.com")
+    response = requests.get("https://api.github.com", timeout=10)
 
     if response.ok:
         data = response.json()
