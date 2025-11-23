@@ -54,4 +54,5 @@ bytecode
 *.aux
 *.synctex.gz
 *.ctxt
+# Java VM crash logs
 hs_err_pid*
