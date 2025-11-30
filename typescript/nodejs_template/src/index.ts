@@ -1,3 +1,3 @@
-// index.js
+// index.ts
 
 console.log('Hello World!');
