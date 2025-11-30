@@ -1,0 +1,48 @@
+{
+  "name": "typescript_nodejs_template",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "lefthook install",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "format": "lint-staged",
+    "types": "npx typesync",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@arkweid/lefthook": "^0.7.7",
+    "@eslint/js": "^9.31.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/eslint-plugin-security": "~3.0.0",
+    "@types/lint-staged": "~13.3.0",
+    "@types/node": "^24.0.15",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-security": "^3.0.1",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "typesync": "^0.14.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "winston": "^3.17.0"
+  }
+}
