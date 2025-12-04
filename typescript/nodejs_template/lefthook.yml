@@ -1,0 +1,13 @@
+# LEFTHOOK CONFIG
+# Git hooks config
+# Refer for explanation to following link:
+# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
+#
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      run: npm run format
+      stage_fixed: true
+    lint:
+      run: npm run lint
