@@ -2,7 +2,7 @@
 name: Task
 about: Task or Chore
 title: "[TASK] "
-labels: ''
+labels: 'task'
 assignees: ''
 
 ---
