@@ -13,8 +13,14 @@ def multiply_with_addition(a, b):
     """
     # Validate that b can be used with range()
     if not isinstance(b, int):
-        if isinstance(b, float) and b.is_integer():
-            b = int(b)
+        if isinstance(b, float):
+            # Check for special float values
+            if not b.is_integer():
+                raise TypeError(f"Parameter 'b' must be an integer or a float representing an integer value, got {type(b).__name__}: {b}")
+            try:
+                b = int(b)
+            except (ValueError, OverflowError) as e:
+                raise TypeError(f"Parameter 'b' cannot be converted to integer: {e}")
         else:
             raise TypeError(f"Parameter 'b' must be an integer or a float representing an integer value, got {type(b).__name__}: {b}")
     
