@@ -19,7 +19,7 @@ def multiply_with_addition(a, b):
                 raise TypeError(f"Parameter 'b' must be an integer or a float representing an integer value, got {type(b).__name__}: {b}")
             try:
                 b = int(b)
-            except (ValueError, OverflowError) as e:
+            except OverflowError as e:
                 raise TypeError(f"Parameter 'b' cannot be converted to integer: {e}")
         else:
             raise TypeError(f"Parameter 'b' must be an integer or a float representing an integer value, got {type(b).__name__}: {b}")
