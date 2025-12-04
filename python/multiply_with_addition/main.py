@@ -1,5 +1,23 @@
 def multiply_with_addition(a, b):
-    """Multiply two numbers using repeated addition."""
+    """Multiply two numbers using repeated addition.
+    
+    Args:
+        a: First number (can be int or float)
+        b: Second number (must be int or convertible to int)
+        
+    Returns:
+        The product of a and b
+        
+    Raises:
+        TypeError: If b cannot be converted to an integer
+    """
+    # Validate that b can be used with range()
+    if not isinstance(b, int):
+        if isinstance(b, float) and b.is_integer():
+            b = int(b)
+        else:
+            raise TypeError(f"Parameter 'b' must be an integer or a float representing an integer value, got {type(b).__name__}: {b}")
+    
     result = 0
     sign = 1
     if b < 0:
