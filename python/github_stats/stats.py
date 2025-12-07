@@ -2,6 +2,7 @@ import requests
 from collections import Counter, defaultdict
 import os
 from dotenv import load_dotenv
+import time
 
 # Load environment variables from .env file
 load_dotenv()
@@ -60,14 +61,26 @@ def get_user_languages(
 
         # Skip repos not owned by the user if ONLY_OWNED is true
         if only_owned:
-            owner_login = repo["owner"]["login"].lower()
+            owner_login = repo.get("owner", {}).get("login")
             is_admin = repo.get("permissions", {}).get("admin", False)
-            if owner_login != username.lower() and not is_admin:
+            if owner_login is None or username is None:
+                print(f"Skipping repo due to missing owner or username: {repo_name}")
+                continue
+            if owner_login.lower() != username.lower() and not is_admin:
                 print(f"Skipping non-owned repo: {repo_name}")
                 continue
 
         lang_url = repo["languages_url"]
         resp = requests.get(lang_url, headers=headers)
+        # Rate limit handling
+        remaining = int(resp.headers.get("X-RateLimit-Remaining", 1))
+        reset = int(resp.headers.get("X-RateLimit-Reset", 0))
+        if remaining <= 1:
+            wait_time = max(0, reset - int(time.time()))
+            print(f"Rate limit reached. Waiting {wait_time} seconds until reset...")
+            time.sleep(wait_time + 1)
+        else:
+            time.sleep(0.1)  # Small delay between requests
         if resp.status_code == 200:
             langs = resp.json()
             language_counter.update(langs)
