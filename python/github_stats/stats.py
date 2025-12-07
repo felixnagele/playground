@@ -8,8 +8,11 @@ import time
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 USERNAME = os.getenv("USERNAME")
-if not TOKEN or not USERNAME:
-    raise ValueError("TOKEN and USERNAME must be set in .env file")
+# Check for placeholder or obvious invalid token values
+if not TOKEN or TOKEN.lower() in {"your_token_here", "changeme", "", None}:
+    raise ValueError("TOKEN must be set to a valid value in .env file")
+if not USERNAME:
+    raise ValueError("USERNAME must be set in .env file")
 EXCLUDE_REPOS = os.getenv("EXCLUDE_REPOS", "")
 ONLY_OWNED = os.getenv("ONLY_OWNED", "false").lower() == "true"
 
@@ -41,7 +44,8 @@ def get_user_languages(
             repos_url, headers=headers, params={"per_page": 100, "page": page}
         )
         if resp.status_code != 200:
-            raise Exception(f"Error fetching repos: {resp.status_code} {resp.text}")
+            # Avoid leaking sensitive info in error messages
+            raise Exception(f"Error fetching repos: {resp.status_code}")
         data = resp.json()
         if not data:
             break
