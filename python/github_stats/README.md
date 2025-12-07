@@ -4,7 +4,7 @@ Test project for analyzing GitHub repository statistics.
 
 ## How to use
 
-After cloning the repository, you have to create an .env file in the root directory with the following content:
+After cloning the repository, you have to create an .env file in the `python/github_stats/` directory with the following content:
 
 ```env
 USERNAME=   # Your GitHub username
