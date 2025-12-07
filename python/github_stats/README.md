@@ -13,6 +13,12 @@ EXCLUDE_REPOS=   # Comma-separated repos to ignore
 ONLY_OWNED=true  # Limit to repos you own
 ```
 
+### Security and Token Setup
+
+1. **Add `.env` to `.gitignore`**  
+   To prevent accidentally committing sensitive tokens, add `.env` to your `.gitignore` file:
+   ```gitignore
+   .env
 Then, install the required packages:
 
 ```bash
