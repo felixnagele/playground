@@ -4,20 +4,23 @@ import os
 from dotenv import load_dotenv
 import time
 
-# Load environment variables from .env file
-load_dotenv()
-TOKEN = os.getenv("TOKEN")
-USERNAME = os.getenv("USERNAME")
-# Check for placeholder or obvious invalid token values
-if not TOKEN or TOKEN.lower() in {"your_token_here", "changeme", "", None}:
-    raise ValueError("TOKEN must be set to a valid value in .env file")
-if not USERNAME:
-    raise ValueError("USERNAME must be set in .env file")
-EXCLUDE_REPOS = os.getenv("EXCLUDE_REPOS", "")
-ONLY_OWNED = os.getenv("ONLY_OWNED", "false").lower() == "true"
+# Progress bar scaling factor: scales percentage (0-100) to bar length (0-50 characters)
+BAR_SCALE_FACTOR = 2
 
-# Turn comma-separated string into a set of repo names
-EXCLUDE_SET = {r.strip() for r in EXCLUDE_REPOS.split(",") if r.strip()}
+
+def load_config():
+    load_dotenv()
+    token = os.getenv("TOKEN")
+    username = os.getenv("USERNAME")
+    # Check for placeholder or obvious invalid token values
+    if not token or token.lower() in {"your_token_here", "changeme", "", None}:
+        raise ValueError("TOKEN must be set to a valid value in .env file")
+    if not username:
+        raise ValueError("USERNAME must be set in .env file")
+    exclude_repos = os.getenv("EXCLUDE_REPOS", "")
+    only_owned = os.getenv("ONLY_OWNED", "false").lower() == "true"
+    exclude_set = {r.strip() for r in exclude_repos.split(",") if r.strip()}
+    return token, username, exclude_set, only_owned
 
 
 def get_user_languages(
@@ -102,20 +105,21 @@ def print_language_stats(language_counter, language_repos):
         print("No language data found.")
         return
 
-    print(f"\n=== Language Usage Across Profile ({USERNAME}) ===")
+    print(f"\n=== Language Usage Across Profile ===")
     for lang, bytes_of_code in language_counter.most_common():
         percent = (bytes_of_code / total_bytes) * 100
-        bar = "█" * int(percent // 2)
+        bar = "█" * int(percent // BAR_SCALE_FACTOR)
         repos_list = ", ".join(sorted(language_repos[lang]))
         print(f"{lang:15} {percent:6.2f}% {bar}  | Repos: {repos_list}")
 
 
 if __name__ == "__main__":
+    token, username, exclude_set, only_owned = load_config()
     languages, language_repos = get_user_languages(
-        username=USERNAME,
-        token=TOKEN,
+        username=username,
+        token=token,
         include_private=True,
-        exclude_repos=EXCLUDE_SET,
-        only_owned=ONLY_OWNED,
+        exclude_repos=exclude_set,
+        only_owned=only_owned,
     )
     print_language_stats(languages, language_repos)
