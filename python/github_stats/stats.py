@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 USERNAME = os.getenv("USERNAME")
+if not TOKEN or not USERNAME:
+    raise ValueError("TOKEN and USERNAME must be set in .env file")
 EXCLUDE_REPOS = os.getenv("EXCLUDE_REPOS", "")
 ONLY_OWNED = os.getenv("ONLY_OWNED", "false").lower() == "true"
 
