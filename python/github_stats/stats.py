@@ -14,7 +14,7 @@ def load_config():
     username = os.getenv("USERNAME")
     # Check for placeholder or obvious invalid token values
     if not token or token.lower() in {"your_token_here", "changeme", "", None}:
-        raise ValueError("TOKEN must be set to a valid value in .env file")
+        raise ValueError("TOKEN must be set to a valid value in .env file (masked)")
     if not username:
         raise ValueError("USERNAME must be set in .env file")
     exclude_repos = os.getenv("EXCLUDE_REPOS", "")
@@ -44,15 +44,16 @@ def get_user_languages(
     page = 1
     while True:
         resp = requests.get(
+            repos_url, headers=headers, params={"per_page": 100, "page": page}
+        )
+        if resp.status_code != 200:
             # Provide a user-friendly error message with actionable advice
             raise Exception(
                 f"Failed to fetch repositories (HTTP status: {resp.status_code}). "
                 "This may be due to invalid token, insufficient permissions, or incorrect username. "
                 "Please check your token permissions and username in the .env file."
             )
-        if resp.status_code != 200:
-            # Avoid leaking sensitive info in error messages
-            raise Exception(f"Error fetching repos: {resp.status_code}")
+        # SECURITY NOTE: Ensure your .env file is kept secret and is listed in .gitignore to avoid leaking credentials.
         data = resp.json()
         if not data:
             break
