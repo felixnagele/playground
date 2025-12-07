@@ -23,7 +23,7 @@ def get_user_languages(
 ):
     headers = {}
     if token:
-        headers["Authorization"] = f"token {token}"
+        headers["Authorization"] = f"Bearer {token}"
 
     # Use /user/repos if token is provided and include_private=True
     if include_private and token:
