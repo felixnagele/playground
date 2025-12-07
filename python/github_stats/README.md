@@ -8,7 +8,7 @@ After cloning the repository, you have to create an .env file in the root direct
 
 ```env
 USERNAME=   # Your GitHub username
-TOKEN=      # Personal access token
+TOKEN=      # Personal access token (classic or fine-grained)
 EXCLUDE_REPOS=   # Comma-separated repos to ignore
 ONLY_OWNED=true  # Limit to repos you own
 ```
