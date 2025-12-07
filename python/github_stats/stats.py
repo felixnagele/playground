@@ -44,8 +44,12 @@ def get_user_languages(
     page = 1
     while True:
         resp = requests.get(
-            repos_url, headers=headers, params={"per_page": 100, "page": page}
-        )
+            # Provide a user-friendly error message with actionable advice
+            raise Exception(
+                f"Failed to fetch repositories (HTTP status: {resp.status_code}). "
+                "This may be due to invalid token, insufficient permissions, or incorrect username. "
+                "Please check your token permissions and username in the .env file."
+            )
         if resp.status_code != 200:
             # Avoid leaking sensitive info in error messages
             raise Exception(f"Error fetching repos: {resp.status_code}")
