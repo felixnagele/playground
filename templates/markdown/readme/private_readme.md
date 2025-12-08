@@ -2,7 +2,7 @@
 
 [Short description of what this project does for you.]
 
-## ✨ Key Features
+## ✨ Features
 
 - Feature 1
 - Feature 2
@@ -10,9 +10,8 @@
 
 ## 🛠 Requirements
 
-- Git
 - <language/runtime>
-- Other tools
+- any other essential tools
 
 ## 🚀 Quick Start
 
@@ -23,19 +22,21 @@ cd <REPO_DIR>
 <run_command>
 ```
 
-## 🔎 Minimal Usage Example
+## 📖 Usage
 
-_Show the simplest action you use most._
+Describe how to use the project. Show code snippets or commands.
 
-## 💻 CLI Example
+See [examples](./examples) for more.
 
-`<cli-command> --input ./sample`
+## 🧪 Running Tests
 
-## ✅ Tests
+Run tests locally:
 
 ```bash
 <test_command>
 ```
+
+Tests also run automatically in CI/pipeline (if configured).
 
 ## 📝 Notes
 
