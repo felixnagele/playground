@@ -2,19 +2,19 @@
 
 > _Short tagline: what it does, who benefits._
 
-## Why
+## ❓ Why
 
 - **Problem:** _Describe the main pain point._
 - **Solution:** _State the core value._
 
-## Key Features
+## ✨ Key Features
 
 - Outcome-driven feature 1
 - Outcome-driven feature 2
 - Outcome-driven feature 3  
   _(Update as features evolve)_
 
-## Requirements
+## 🛠 Requirements
 
 System-level prerequisites:
 
@@ -22,7 +22,7 @@ System-level prerequisites:
 - <language/runtime> installed
 - any other essential tools
 
-## Quick Start
+## 🚀 Quick Start
 
 Get running in minutes:
 
@@ -51,15 +51,15 @@ cd <REPO_DIR>
 git clone <REPO_URL> && cd <REPO_DIR> && <install_command> && <run_command>
 ```
 
-## Minimal Usage Example
+## 🔎 Minimal Usage Example
 
 _Show the simplest action that delivers value._
 
-## CLI Example
+## 💻 CLI Example
 
 `<cli-command> --input ./sample`
 
-## Tests
+## ✅ Tests
 
 Run tests locally:
 
