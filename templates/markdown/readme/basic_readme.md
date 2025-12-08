@@ -43,7 +43,7 @@ git clone <REPO_URL> && cd <REPO_DIR> && <install_command> && <run_command>
 
 ## 📖 Usage
 
-How to use the project. Show code snippets or commands.
+Describe how to use the project. Show code snippets or commands.
 
 See [examples](./examples) for more.
 
