@@ -18,7 +18,7 @@
 
 System-level prerequisites:
 
-- git installed
+- Git installed
 - <language/runtime> installed
 - any other essential tools
 
