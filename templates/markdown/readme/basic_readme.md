@@ -71,7 +71,7 @@ Tests also run automatically in CI/pipeline (if configured).
 
 ## Code Examples
 
-See [/examples](./examples) for more.
+See [examples](./examples) for more.
 
 ## Contributing, License & Support
 
