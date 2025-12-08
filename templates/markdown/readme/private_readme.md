@@ -2,7 +2,7 @@
 
 [Short description of what this project does for you.]
 
-## ✨ Features
+## ✨ Key Features
 
 - Feature 1
 - Feature 2
