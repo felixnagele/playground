@@ -14,6 +14,14 @@
 - Outcome-driven feature 3  
   _(Update as features evolve)_
 
+## Requirements
+
+System-level prerequisites:
+
+- git installed
+- <language/runtime> installed
+- any other essential tools
+
 ## Quick Start
 
 Get running in minutes:
