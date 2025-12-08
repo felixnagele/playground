@@ -23,7 +23,7 @@ cd <REPO_DIR>
 <run_command>
 ```
 
-## 🔎 Usage Example
+## 🔎 Minimal Usage Example
 
 _Show the simplest action you use most._
 
