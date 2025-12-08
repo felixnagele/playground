@@ -2,7 +2,7 @@
 
 This is my personal playground repository — a space where I experiment, learn, and test out different ideas.
 
-## ✨ Key Features
+## ✨ Features
 
 - Multi-language playground
 - Modular structure for easy navigation and experimentation
@@ -11,14 +11,9 @@ This is my personal playground repository — a space where I experiment, learn,
 
 ## 🛠 Requirements
 
-System-level prerequisites:
-
-- Git installed
 - Language runtimes per project
 
 ## 🚀 Quick Start
-
-Get running in minutes:
 
 ### Step 1: Clone the repo
 
@@ -27,25 +22,33 @@ git clone https://github.com/felixnagele/playground.git
 cd playground
 ```
 
+### Step 2: Explore projects
+
+Browse through the folders to find different projects and experiments.
+
 ### One-liner setup
 
 ```bash
 git clone https://github.com/felixnagele/playground.git && cd playground
 ```
 
-## 🔎 Minimal Usage Example
+## 📖 Usage
 
-## 💻 CLI Example
+Check out each folder, module, or example in the project for more details and usage.
 
-## ✅ Tests
+## 🧪 Running Tests
 
 Run tests locally:
 
+<!--
+```bash
+<test_command>
+```
+-->
+
+_No tests are currently configured in this repository._
+
 Tests also run automatically in CI/pipeline (if configured).
-
-## Code Examples
-
-Check out each folder, module, or example in the project for more details and usage.
 
 ## Contributing, License & Support
 
