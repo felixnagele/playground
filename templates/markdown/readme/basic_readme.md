@@ -1,11 +1,6 @@
 # PROJECT NAME
 
-> _Short tagline: what it does, who benefits._
-
-## ❓ Why
-
-- **Problem:** _Describe the main pain point._
-- **Solution:** _State the core value._
+This project is a [short description] that helps [target users] by [main value or solution].
 
 ## ✨ Key Features
 
