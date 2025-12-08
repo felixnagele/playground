@@ -40,9 +40,13 @@ Check out each folder, module, or example in the project for more details and us
 
 Run tests locally:
 
+<!--
 ```bash
 <test_command>
 ```
+-->
+
+_No tests are currently configured in this repository._
 
 Tests also run automatically in CI/pipeline (if configured).
 
