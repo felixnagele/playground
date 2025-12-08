@@ -1,10 +1,6 @@
-# Playground
+# Playground 🎡
 
-> _This is my personal playground repository — a space where I experiment, learn, and test out different ideas._
-
-## ❓ Why
-
-Just a space to test and experiment with features, code, and ideas — nothing more, nothing less.
+This is my personal playground repository — a space where I experiment, learn, and test out different ideas.
 
 ## ✨ Key Features
 
