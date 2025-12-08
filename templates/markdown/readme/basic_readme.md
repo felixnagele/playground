@@ -2,24 +2,19 @@
 
 This project is a [short description] that helps [target users] by [main value or solution].
 
-## ✨ Key Features
+## ✨ Features
 
-- Outcome-driven feature 1
-- Outcome-driven feature 2
-- Outcome-driven feature 3  
+- Feature 1
+- Feature 2
+- Feature 3  
   _(Update as features evolve)_
 
 ## 🛠 Requirements
 
-System-level prerequisites:
-
-- Git installed
 - <language/runtime> installed
 - any other essential tools
 
 ## 🚀 Quick Start
-
-Get running in minutes:
 
 ### Step 1: Clone the repo
 
@@ -46,15 +41,13 @@ cd <REPO_DIR>
 git clone <REPO_URL> && cd <REPO_DIR> && <install_command> && <run_command>
 ```
 
-## 🔎 Minimal Usage Example
+## 📖 Usage
 
-_Show the simplest action that delivers value._
+Describe how to use the project. Show code snippets or commands.
 
-## 💻 CLI Example
+See [examples](./examples) for more.
 
-`<cli-command> --input ./sample`
-
-## ✅ Tests
+## 🧪 Running Tests
 
 Run tests locally:
 
@@ -63,10 +56,6 @@ Run tests locally:
 ```
 
 Tests also run automatically in CI/pipeline (if configured).
-
-## Code Examples
-
-See [examples](./examples) for more.
 
 ## Contributing, License & Support
 
