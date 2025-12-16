@@ -6,7 +6,7 @@ This project is a [short description] that helps [target users] by [main value o
 
 - Feature 1
 - Feature 2
-- Feature 3  
+- Feature 3
   _(Update as features evolve)_
 
 ## 🛠 Requirements
