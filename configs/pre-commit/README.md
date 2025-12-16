@@ -36,5 +36,5 @@ pre-commit run --all-files --config [file_path]
 
 ## Notes
 
-- Deprecated (archived) repo: [mirrors-prettier](https://github.com/pre-commit/mirrors-prettier) - Search for a better alternative -> (official prettier solutions?) - [Prettier-Precommit](https://prettier.io/docs/precommit)
+- Deprecated (archived) repo: [mirrors-prettier](https://github.com/pre-commit/mirrors-prettier) - Consider searching for a better alternative, such as official Prettier solutions: [Prettier-Precommit](https://prettier.io/docs/precommit)
 - This pre-commit config file could be added to the .github repo in a shared folder: shared/[file_path] and then referenced by each repo's pre-commit file
