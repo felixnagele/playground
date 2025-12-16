@@ -1,8 +1,8 @@
 """Example tests."""
 
-from src.utils import add
 from src.sub_folder_1.test1 import calculate
 from src.sub_folder_2.test2 import double_calculate
+from src.utils import add
 
 
 def test_add():

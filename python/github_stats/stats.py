@@ -1,8 +1,9 @@
-import requests
-from collections import Counter, defaultdict
 import os
-from dotenv import load_dotenv
 import time
+from collections import Counter, defaultdict
+
+import requests
+from dotenv import load_dotenv
 
 # Progress bar scaling factor: scales percentage (0-100) to bar length (0-50 characters)
 BAR_SCALE_FACTOR = 2
