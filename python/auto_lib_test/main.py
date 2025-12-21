@@ -16,5 +16,7 @@ def main():
             print(f"Error: Failed to fetch GitHub API (Status {response.status_code})")
     except requests.exceptions.RequestException as e:
         print(f"Error: Network error occurred - {e}")
+
+
 if __name__ == "__main__":
     main()

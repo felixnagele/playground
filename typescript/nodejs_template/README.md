@@ -2,13 +2,14 @@
 
 ## Development
 
-project_folder/  
-├─ dist/               - Compiled JS-Code  
-├─ src/                - Source - TS-Code  
-├─ package.json        - Contains versions & Scripts  
-├─ package-lock.json   - Locks exact packet versions  
-├─ .env                - Configuration (not in Git!)  
-├─ node_modules/       - Libraries  
+project_folder/
+
+- dist/ - Compiled JS-Code
+- src/ - Source - TS-Code
+- package.json - Contains versions & Scripts
+- package-lock.json - Locks exact packet versions
+- .env - Configuration (not in Git!)
+- node_modules/ - Libraries
 
 ## Setup
 
