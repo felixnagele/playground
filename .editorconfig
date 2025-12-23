@@ -11,7 +11,7 @@ insert_final_newline = true
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{py,java,c,h,cpp,hpp,cxx,hxx,cc,cs,rs,php,swift,kt,m,mm}]
+[*.{py,java,cs,rs,php,swift,kt,c,cpp,cxx,cc,h,hpp,hxx,hh,tpp,ipp}]
 indent_size = 4
 
 [*.py]
@@ -21,5 +21,14 @@ max_line_length = 88
 indent_style = tab
 indent_size = 4
 
-[*.{asm,s,S},Makefile,*.mk,GNUmakefile]
+[*.{asm,s,S}]
+indent_style = tab
+
+[Makefile]
+indent_style = tab
+
+[*.mk]
+indent_style = tab
+
+[GNUmakefile]
 indent_style = tab
