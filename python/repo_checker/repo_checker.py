@@ -71,12 +71,16 @@ def find_repos(start_path: str) -> list[str]:
 
 
 def get_committed_files(repo_path: str) -> list[str]:
-    output = run_cmd("git ls-files", repo_path)
-    if not output:
-        return []
-    if output.startswith("ERROR:"):
+    try:
+        output = run_cmd("git ls-files", repo_path)
+    except Exception as e:
         # Failed to list committed files; log and return an empty list.
-        print(output, file=sys.stderr)
+        print(
+            f"⚠️ Failed to list committed files in {repo_path!r}: {e}",
+            file=sys.stderr,
+        )
+        return []
+    if not output:
         return []
     return output.splitlines()
 
