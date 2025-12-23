@@ -87,7 +87,7 @@ def check_eol(repo_path):
         print(output)
 
 
-def check_trailing_whitespace(repo_path):
+def check_trailing_whitespace(repo_path: str) -> None:
     committed_files = get_committed_files(repo_path)
 
     for rel_path in committed_files:
