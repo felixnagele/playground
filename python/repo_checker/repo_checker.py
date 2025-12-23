@@ -107,8 +107,8 @@ def check_trailing_whitespace(repo_path: str) -> None:
                 for i, line in enumerate(f, start=1):
                     if line.rstrip() != line.rstrip("\n\r"):
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
-        except Exception:
-            pass
+        except (OSError, IOError) as e:
+            print(f"⚠️ Could not read {full_path}: {e}", file=sys.stderr)
 
 
 def process_path(path: str) -> None:
