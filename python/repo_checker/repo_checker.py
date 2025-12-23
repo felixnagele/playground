@@ -102,13 +102,12 @@ def check_trailing_whitespace(repo_path: str) -> None:
             continue
 
         full_path = os.path.join(repo_path, rel_path)
-        except Exception:
         try:
             with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
                 for i, line in enumerate(f, start=1):
                     if line.rstrip() != line.rstrip("\n\r"):
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
-        except:
+        except Exception:
             pass
 
 
