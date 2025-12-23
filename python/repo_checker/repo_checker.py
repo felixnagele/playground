@@ -107,7 +107,7 @@ def check_trailing_whitespace(repo_path):
             pass
 
 
-def process_path(path):
+def process_path(path: str) -> None:
     if is_git_repo(path):
         print(f"\n📁 Checking repo: {path}")
         check_eol(path)
