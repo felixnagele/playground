@@ -55,7 +55,7 @@ def run_cmd(cmd: str, cwd: str) -> str:
         return ""
 
 
-def is_git_repo(path):
+def is_git_repo(path: str) -> bool:
     return os.path.isdir(os.path.join(path, ".git"))
 
 
