@@ -70,7 +70,13 @@ def find_repos(start_path: str) -> list[str]:
 
 def get_committed_files(repo_path: str) -> list[str]:
     output = run_cmd("git ls-files", repo_path)
-    return output.splitlines() if output else []
+    if not output:
+        return []
+    if output.startswith("ERROR:"):
+        # Failed to list committed files; log and return an empty list.
+        print(output, file=sys.stderr)
+        return []
+    return output.splitlines()
 
 
 def check_eol(repo_path):
