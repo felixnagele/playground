@@ -1,0 +1,28 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{py,java,c,h,cpp,hpp,cxx,hxx,cc,cs,rs,php,swift,kt,m,mm}]
+indent_size = 4
+
+[*.py]
+max_line_length = 88
+
+[*.go]
+indent_style = tab
+indent_size = 4
+
+[*.{asm,s,S}]
+indent_style = tab
+
+[{Makefile,*.mk,GNUmakefile}]
+indent_style = tab

@@ -1,0 +1,19 @@
+{
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "prettier.prettier-vscode",
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "ms-python.python",
+    "ms-python.debugpy",
+    "ms-python.vscode-python-envs",
+    "ms-python.black-formatter",
+    "ms-python.vscode-pylance",
+    "ms-python.isort",
+    "ms-python.mypy-type-checker",
+    "charliermarsh.ruff",
+    "xaver.clang-format",
+    "ms-vscode.cpptools",
+    "ms-vscode.cmake-tools"
+  ]
+}

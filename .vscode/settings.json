@@ -1,10 +1,37 @@
 {
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+
   "editor.formatOnSave": true,
   "editor.formatOnPaste": false,
+
   "editor.defaultFormatter": "prettier.prettier-vscode",
+
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.formatOnSave": true
+  },
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.formatOnSave": true
+  },
+  "files.associations": {
+    "*.h": "cpp",
+    "*.hpp": "cpp",
+    "*.hxx": "cpp",
+    "*.hh": "cpp",
+    "*.cc": "cpp",
+    "*.cxx": "cpp",
+    "*.c++": "cpp",
+    "*.tpp": "cpp",
+    "*.ipp": "cpp"
   }
 }
