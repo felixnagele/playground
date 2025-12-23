@@ -42,7 +42,7 @@ def should_ignore(path: str) -> bool:
     return lower.endswith(IGNORED_SUFFIXES)
 
 
-def run_cmd(cmd, cwd):
+def run_cmd(cmd: str, cwd: str) -> str:
     try:
         result = subprocess.run(
             cmd, cwd=cwd, shell=True, capture_output=True, text=True
