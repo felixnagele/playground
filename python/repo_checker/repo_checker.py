@@ -64,7 +64,7 @@ def find_repos(start_path: str) -> list[str]:
     for root, dirs, files in os.walk(start_path):
         if ".git" in dirs:
             repos.append(root)
-            dirs.remove(".git")
+            dirs[:] = [d for d in dirs if d != ".git"]
     return repos
 
 
