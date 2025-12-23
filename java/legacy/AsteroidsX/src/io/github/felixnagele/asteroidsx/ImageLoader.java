@@ -8,14 +8,14 @@ import javax.imageio.ImageIO;
 /**
  * ImageLoader Class
  */
-public class ImageLoader 
+public class ImageLoader
 {
 
-	public ImageLoader() 
+	public ImageLoader()
 	{
 
 	}
-	
+
 	public static BufferedImage loadImage(String path)
 	{
 		BufferedImage picture = null;
@@ -31,5 +31,5 @@ public class ImageLoader
 		}
 		return picture;
 	}
-	
+
 }

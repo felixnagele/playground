@@ -49,11 +49,11 @@ public class Main extends JFrame {
 		this.setBackground(Color.BLACK);
 		this.setResizable(false);
 		this.setIconImage(loadImage("rsc/VirusKiller_Icon.png"));
-		
+
 		Paint paint = new Paint();
 		contentPane.add(paint, BorderLayout.CENTER);
 	}
-	
+
 	public static BufferedImage loadImage(String path)
 	{
 		BufferedImage picture = null;

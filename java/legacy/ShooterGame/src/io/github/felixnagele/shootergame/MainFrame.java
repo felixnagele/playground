@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
 		setUndecorated(true);
 		setExtendedState(MAXIMIZED_BOTH);
 //		setIconImage(new ImageIcon(getClass().getResource("/?GAME?_Icon.png")).getImage());
-		
+
 		GamePanel gamePanel = new GamePanel();
 		contentPane.add(gamePanel, BorderLayout.CENTER);
 	}

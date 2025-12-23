@@ -6,25 +6,25 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener
 {
 
-	public KeyHandler() 
+	public KeyHandler()
 	{
 	}
 
-	public void keyPressed(KeyEvent e) 
+	public void keyPressed(KeyEvent e)
 	{
 		int key = e.getKeyCode();
-		
+
 		if(key == KeyEvent.VK_SPACE)
 		{
 			Var.start = true;
 		}
 	}
 
-	public void keyReleased(KeyEvent e) 
+	public void keyReleased(KeyEvent e)
 	{
 	}
 
-	public void keyTyped(KeyEvent e) 
+	public void keyTyped(KeyEvent e)
 	{
 	}
 

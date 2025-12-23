@@ -2,9 +2,9 @@ package io.github.felixnagele.clickmatter;
 
 import java.util.Random;
 
-public class Var 
+public class Var
 {
-	public Var() 
+	public Var()
 	{
 		Methods.setBooleanArrayFalse(clicked);
 		for(int i = 0; i < random.length; i++)
@@ -14,7 +14,7 @@ public class Var
 		}
 	}
 	public static Random rng = new Random();
-	
+
 	public static int screenwidth = 1920;
 	public static int screenheight = 1080;
 	public static int objw = 50;

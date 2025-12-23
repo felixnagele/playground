@@ -6,18 +6,18 @@ import java.awt.event.KeyListener;
 /**
  * KeyHandler Class
  */
-public class KeyHandler implements KeyListener 
+public class KeyHandler implements KeyListener
 {
 
-	public KeyHandler() 
+	public KeyHandler()
 	{
-		
+
 	}
 
-	public void keyPressed(KeyEvent e) 
+	public void keyPressed(KeyEvent e)
 	{
 		int key = e.getKeyCode();
-		
+
 		if(Var.startGame)
 		{
 			if(key == KeyEvent.VK_W)
@@ -48,10 +48,10 @@ public class KeyHandler implements KeyListener
 		}
 	}
 
-	public void keyReleased(KeyEvent e) 
+	public void keyReleased(KeyEvent e)
 	{
 		int key = e.getKeyCode();
-		
+
 		if(Var.startGame)
 		{
 			if(key == KeyEvent.VK_W)
@@ -77,7 +77,7 @@ public class KeyHandler implements KeyListener
 		}
 	}
 
-	public void keyTyped(KeyEvent e) 
+	public void keyTyped(KeyEvent e)
 	{
 	}
 

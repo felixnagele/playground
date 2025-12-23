@@ -6,11 +6,11 @@ import java.awt.event.ActionListener;
 public class Animation implements ActionListener
 {
 
-	public Animation() 
+	public Animation()
 	{
 	}
 
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(ActionEvent e)
 	{
 		if(Var.start)
 		{
@@ -26,9 +26,9 @@ public class Animation implements ActionListener
 					else
 					{
 						Var.outofmapbool[i] = true;
-					}	
+					}
 				}
-			}	
+			}
 		}
 	}
 }

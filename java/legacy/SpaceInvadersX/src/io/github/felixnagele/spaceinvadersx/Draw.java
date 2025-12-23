@@ -34,11 +34,11 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 	private int enemiecount = 0;
 	private boolean startGame = true;
 	private boolean collision = false;
-	
+
 	/**
 	 * Create the panel.
 	 */
-	public Draw() 
+	public Draw()
 	{
 		timer = new Timer(15,this);
 		timer.start();
@@ -52,15 +52,15 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 		        this.enemieY[(j * 10 + i)] = (10 + j * 50);
 			}
 		}
-		
+
 	}
 
-	protected void paintComponent(Graphics g) 
+	protected void paintComponent(Graphics g)
 	{
 		moveY = getHeight()-30;
 		super.paintComponent(g);
 		Graphics2D g2D = (Graphics2D)g;
-		
+
 		if(startGame)
 		{
 			//PLAYER
@@ -73,14 +73,14 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 					startGame = false;
 				}
 			}
-			
+
 			//ENEMIES
 			for(int i = 0; i < enemieX.length; i++)
 			{
 				g2D.setColor(Color.WHITE);
 				g2D.fillRect(enemieX[i], (int)enemieY[i], enemieWidth, enemieHeight);
 			}
-			
+
 			for(int i = 0; i < enemieX.length; i++)
 			{
 				if(collision(shotX, shotY, enemieX[i],(int)enemieY[i], enemieWidth, enemieHeight))
@@ -92,7 +92,7 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 					startGame = false;
 				}
 			}
-			
+
 			//SHOT
 			if(shot)
 			{
@@ -139,10 +139,10 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 		repaint();
 	}
 
-	public void keyPressed(KeyEvent e) 
+	public void keyPressed(KeyEvent e)
 	{
 		int key = e.getKeyCode();
-		
+
 		if(key == KeyEvent.VK_A)
 		{
 			moveLeft = true;
@@ -158,10 +158,10 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 		repaint();
 	}
 
-	public void keyReleased(KeyEvent e) 
+	public void keyReleased(KeyEvent e)
 	{
 		int key = e.getKeyCode();
-		
+
 		if(key == KeyEvent.VK_A)
 		{
 			moveLeft = false;
@@ -171,18 +171,18 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 			moveRight = false;
 		}
 	}
-	public void keyTyped(KeyEvent e) 
-	{	
+	public void keyTyped(KeyEvent e)
+	{
 	}
 
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(ActionEvent e)
 	{
 		//SHOT
 		if(shot)
 		{
 			shotY-=shotspeed;
 		}
-		
+
 		//PLAYER
 		if(moveRight)
 		{
@@ -192,7 +192,7 @@ public class Draw extends JPanel implements KeyListener, ActionListener
 		{
 			moveX -= speed;
 		}
-		
+
 		//ENEMIES
 		for(int i = 0; i < enemieX.length; i++)
 		{

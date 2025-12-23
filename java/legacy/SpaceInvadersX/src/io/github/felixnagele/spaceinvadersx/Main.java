@@ -42,7 +42,7 @@ public class Main extends JFrame {
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+
 		draw = new Draw();
 		draw.setBackground(Color.BLACK);
 		contentPane.add(draw, BorderLayout.CENTER);

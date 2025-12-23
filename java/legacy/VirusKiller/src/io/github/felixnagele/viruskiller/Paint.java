@@ -17,7 +17,7 @@ public class Paint extends JPanel
 	/**
 	 * Create the panel.
 	 */
-	public Paint() 
+	public Paint()
 	{
 		for(int i = 0; i < Var.enemiex.length; i++)
 		{
@@ -25,7 +25,7 @@ public class Paint extends JPanel
 			Var.enemiey[i] = rng.nextInt(800+1);
 			Var.enemiey[i] = -Var.enemiey[i];
 		}
-		
+
 		Var.timer = new Timer(10, new Animation());
 		Var.timer.start();
 		this.addKeyListener(new KeyHandler());
@@ -35,14 +35,14 @@ public class Paint extends JPanel
 		this.setFocusable(true);
 	}
 
-	protected void paintComponent(Graphics g) 
+	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
 		Graphics2D g2D = (Graphics2D)g;
-		
+
 		int w = this.getWidth();
 		int h = this.getHeight();
-		
+
 		if(!Var.start)
 		{
 			g2D.setColor(Color.BLACK);
@@ -89,7 +89,7 @@ public class Paint extends JPanel
 		g2D.setColor(Color.WHITE);
 		g2D.drawLine(Var.mousex-20, Var.mousey, Var.mousex+20, Var.mousey);
 		g2D.drawLine(Var.mousex, Var.mousey-20, Var.mousex, Var.mousey+20);
-		
+
 		for(int i = 0; i < Var.enemiex.length; i++)
 		{
 			if(Var.clicked[i])
@@ -103,10 +103,10 @@ public class Paint extends JPanel
 			}
 		}
 		Var.clickcount = 0;
-		
+
 		repaint();
 	}
-	
-	
+
+
 
 }
