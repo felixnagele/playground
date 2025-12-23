@@ -78,7 +78,7 @@ def get_committed_files(repo_path: str) -> list[str]:
     return output.splitlines()
 
 
-def check_eol(repo_path):
+def check_eol(repo_path: str) -> None:
     system = platform.system().lower()
 
     if "windows" in system:
