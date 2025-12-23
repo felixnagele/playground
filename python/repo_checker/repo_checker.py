@@ -122,7 +122,7 @@ def process_path(path):
         check_trailing_whitespace(repo)
 
 
-def main():
+def main() -> None:
     if len(sys.argv) == 1:
         base = os.getcwd()
         print(f"🔎 Scanning current directory: {base}")
