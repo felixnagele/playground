@@ -59,7 +59,7 @@ def is_git_repo(path):
     return os.path.isdir(os.path.join(path, ".git"))
 
 
-def find_repos(start_path):
+def find_repos(start_path: str) -> list[str]:
     repos = []
     for root, dirs, files in os.walk(start_path):
         if ".git" in dirs:
