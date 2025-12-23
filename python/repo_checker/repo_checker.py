@@ -49,10 +49,9 @@ def run_cmd(cmd: str, cwd: str) -> str:
         )
         return result.stdout.strip()
     except Exception as e:
-        # Log the error and return an empty string to keep the return type
-        # consistent for callers that expect command output.
+        # Log the error and re-raise to avoid silently treating failures as output.
         print(f"ERROR running command {cmd!r} in {cwd!r}: {e}", file=sys.stderr)
-        return ""
+        raise
 
 
 def is_git_repo(path: str) -> bool:
