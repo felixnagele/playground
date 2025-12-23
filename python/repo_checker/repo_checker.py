@@ -34,6 +34,9 @@ IGNORED_SUFFIXES = (
     ".sqlite3",
     ".class",
     ".map",
+    ".min.js",
+    ".min.css",
+    ".crx",
 )
 
 
