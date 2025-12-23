@@ -21,8 +21,5 @@ max_line_length = 88
 indent_style = tab
 indent_size = 4
 
-[*.{asm,s,S}]
-indent_style = tab
-
-[{Makefile,*.mk,GNUmakefile}]
+[*.{asm,s,S},Makefile,*.mk,GNUmakefile]
 indent_style = tab
