@@ -68,7 +68,7 @@ def find_repos(start_path: str) -> list[str]:
     return repos
 
 
-def get_committed_files(repo_path):
+def get_committed_files(repo_path: str) -> list[str]:
     output = run_cmd("git ls-files", repo_path)
     return output.splitlines() if output else []
 
