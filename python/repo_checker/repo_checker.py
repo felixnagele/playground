@@ -136,6 +136,12 @@ def main() -> None:
         process_path(base)
     else:
         target = os.path.abspath(sys.argv[1])
+        if not os.path.exists(target):
+            print(f"❌ ERROR: Path does not exist: {target}", file=sys.stderr)
+            return
+        if not os.access(target, os.R_OK | os.X_OK):
+            print(f"❌ ERROR: Path is not accessible: {target}", file=sys.stderr)
+            return
         print(f"🔎 Scanning path: {target}")
         process_path(target)
 
