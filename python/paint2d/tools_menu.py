@@ -56,7 +56,7 @@ class ToolsMenu:
         )  # Convert list to dict with all values on False
         self.tool_item_hover = dict.fromkeys(
             self.tool_item_list, False
-        )  # Convert list to dict wtih all values on False
+        )  # Convert list to dict with all values on False
         self.calculate_tool_coordinates()
 
     def __str__(self) -> str:
