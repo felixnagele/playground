@@ -20,18 +20,18 @@ public class Panel extends JPanel implements ActionListener
 	long lastFpsCheck = System.nanoTime();
 	int countedFrames = 0;
 
-	public Panel() 
+	public Panel()
 	{
 		this.timer.start();
 	}
 
-	protected void paintComponent(Graphics g) 
+	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
 		this.y = (getHeight() / 2 - 50);
 
 		this.countedFrames += 1;
-		if (System.nanoTime() > this.lastFpsCheck + 1000000000L) 
+		if (System.nanoTime() > this.lastFpsCheck + 1000000000L)
 		{
 			this.lastFpsCheck = System.nanoTime();
 			this.fps = this.countedFrames;
@@ -39,12 +39,12 @@ public class Panel extends JPanel implements ActionListener
 
 			System.out.println("FPS = " + this.fps);
 		}
-		if (this.x <= 0) 
+		if (this.x <= 0)
 		{
 			this.right = true;
 			this.left = false;
 		}
-		if (this.x >= getWidth() - this.sizeX) 
+		if (this.x >= getWidth() - this.sizeX)
 		{
 			this.right = false;
 			this.left = true;
@@ -55,13 +55,13 @@ public class Panel extends JPanel implements ActionListener
 		repaint();
 	}
 
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(ActionEvent e)
 	{
-		if (this.right) 
+		if (this.right)
 		{
 			this.x += 5;
 		}
-		if (this.left) 
+		if (this.left)
 		{
 			this.x -= 5;
 		}

@@ -38,10 +38,10 @@ public class FrmMain extends javax.swing.JFrame {
 		setContentPane(contentPane);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
-		
+
 		PnlGame pnlGame = new PnlGame();
 		contentPane.add(pnlGame, BorderLayout.CENTER);
-		
+
 	}
 
 }

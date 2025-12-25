@@ -1,11 +1,11 @@
 package io.github.felixnagele.clickmatter;
 
-public class Methods 
+public class Methods
 {
 
-	public Methods() 
+	public Methods()
 	{
-		
+
 	}
 	public static boolean[] setBooleanArrayFalse(boolean[] a)
 	{

@@ -1,15 +1,15 @@
 package io.github.felixnagele.rollingdice;
 
-public class Point 
+public class Point
 {
 	public int x, y;
 
-	public Point() 
+	public Point()
 	{
-		
+
 	}
-	
-	public Point(int x, int y) 
+
+	public Point(int x, int y)
 	{
 		this.x = x;
 		this.y = y;

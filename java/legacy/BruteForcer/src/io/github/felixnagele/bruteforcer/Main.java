@@ -2,10 +2,10 @@ package io.github.felixnagele.bruteforcer;
 
 import java.util.Random;
 
-public class Main 
+public class Main
 {
 
-	public static void main(String[] args) 
+	public static void main(String[] args)
 	{
 		Random rng = new Random();
 		int max = 999999999;
@@ -14,7 +14,7 @@ public class Main
 		int passwordX = 0;
 		long timeStart = System.nanoTime();
 		long timeNow = 0;
-		
+
 		for(int i = 0; i <= max; i++)
 		{
 			passwordX = rng.nextInt(max-min+1)+min;
@@ -22,7 +22,7 @@ public class Main
 			if(passwordX == password)
 			{
 				timeNow = System.nanoTime() - timeStart;
-				
+
 				System.out.println("Password is "+passwordX);
 				System.out.println("Time: "+timeNow*Math.pow(10, -9)+"sec");
 				break;

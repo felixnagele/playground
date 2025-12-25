@@ -3,19 +3,19 @@ package io.github.felixnagele.dotlines;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Dot 
+public class Dot
 {
 	private int x, y;
 	private int radius = 20;
 	private Color color = Color.RED;
-	
+
 //	public Dot(int x, int y)
 //	{
 //		this.x = x;
 //		this.y = y;
 //		this.radius = 20;
 //	}
-	
+
 	public int getX() {
 		return x;
 	}
@@ -39,7 +39,7 @@ public class Dot
 	public void setRadius(int radius) {
 		this.radius = radius;
 	}
-	
+
 	public Color getColor() {
 		return color;
 	}
@@ -52,7 +52,7 @@ public class Dot
 	public String toString() {
 		return x+";"+y;
 	}
-	
+
 	public void paint(Graphics g)
 	{
 		g.setColor(color);

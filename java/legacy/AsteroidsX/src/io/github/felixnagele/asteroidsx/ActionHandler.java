@@ -8,12 +8,12 @@ import java.awt.event.ActionListener;
  */
 public class ActionHandler implements ActionListener
 {
-	public ActionHandler() 
+	public ActionHandler()
 	{
-		
+
 	}
 
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(ActionEvent e)
 	{
 		if(Var.startGame)
 		{

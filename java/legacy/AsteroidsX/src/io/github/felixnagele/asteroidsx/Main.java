@@ -9,21 +9,21 @@ import javax.swing.border.EmptyBorder;
 /**
  * Main Class
  */
-public class Main extends JFrame 
+public class Main extends JFrame
 {
 	private JPanel contentPane;
-	
+
 	/**
 	 * Launch the application.
 	 * @param args Main Method
 	 */
-	public static void main(String[] args) 
+	public static void main(String[] args)
 	{
-		EventQueue.invokeLater(new Runnable() 
+		EventQueue.invokeLater(new Runnable()
 		{
-			public void run() 
+			public void run()
 			{
-				try 
+				try
 				{
 					Main frame = new Main();
 					frame.setVisible(true);
@@ -40,7 +40,7 @@ public class Main extends JFrame
 	/**
 	 * Create the frame.
 	 */
-	public Main() 
+	public Main()
 	{
 		setTitle("AsteroidsX");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +53,7 @@ public class Main extends JFrame
 		setUndecorated(true);
 		setExtendedState(MAXIMIZED_BOTH);
 		setIconImage(ImageLoader.loadImage("rsc/AsteroidsX_Icon.png"));
-		
+
 		GamePanel gamePanel = new GamePanel();
 		contentPane.add(gamePanel, BorderLayout.CENTER);
 	}

@@ -2,13 +2,13 @@ package io.github.felixnagele.viruskiller;
 
 import javax.swing.Timer;
 
-public class Var 
+public class Var
 {
 
-	public Var() 
+	public Var()
 	{
 	}
-	
+
 	public static Timer timer;
 	public static final int framewidth = 800;
 	public static final int frameheight = 800;
