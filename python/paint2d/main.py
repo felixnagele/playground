@@ -22,6 +22,7 @@ paint_surface.fill(PAINT_BACKGROUND_COLOR)
 imported_image = None
 size_color_field_offset_x = 75
 
+
 def main():
     # Define main variables
     global mouse_x
@@ -32,8 +33,8 @@ def main():
     # Define window variables
     global DEFAULT_main_surface_WIDTH
     global DEFAULT_main_surface_HEIGHT
-    WINDOW_CAPTION = 'Paint2D'
-    WINDOW_ICON_PATH = 'src/img/paint2d_icon.png'
+    WINDOW_CAPTION = "Paint2D"
+    WINDOW_ICON_PATH = "src/img/paint2d_icon.png"
 
     # Define paint surface variables
     global paint_surface
@@ -48,8 +49,8 @@ def main():
     size_text_active = False
     color_text_active = False
     x_y_location_list = []
-    selected_size = convert_int_to_string(1) #Default 1
-    selected_color = "#000000" #Default Black
+    selected_size = convert_int_to_string(1)  # Default 1
+    selected_color = "#000000"  # Default Black
     size_color_font_size = 26
     global size_color_field_offset_x
     cursor_timer = time.time()
@@ -78,19 +79,21 @@ def main():
     # Dictionary to store drawn shapes and their layers
     drawn_history = {}
     # Current layer
-    current_layer = -1 # Default -1
+    current_layer = -1  # Default -1
     # Current drawing type
     current_type = None
 
     # Initialize drawn_history
     # First layer = 0
-    #drawn_history[0] = []
+    # drawn_history[0] = []
 
     # Initialize Pygame
     pygame.init()
 
     # ! Create the Pygame window and settings
-    main_surface = pygame.display.set_mode((DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT), pygame.RESIZABLE)
+    main_surface = pygame.display.set_mode(
+        (DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT), pygame.RESIZABLE
+    )
     # Set Window Title
     pygame.display.set_caption(WINDOW_CAPTION)
     # Set Window Icon
@@ -98,11 +101,21 @@ def main():
     pygame.display.set_icon(icon)
 
     # ! Create the menu
-    menu = Menu(DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT, main_surface, paint_surface)
+    menu = Menu(
+        DEFAULT_main_surface_WIDTH,
+        DEFAULT_main_surface_HEIGHT,
+        main_surface,
+        paint_surface,
+    )
     print(menu)
 
     # ! Create the tools menu
-    tools_menu = ToolsMenu(DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT, main_surface, paint_surface)
+    tools_menu = ToolsMenu(
+        DEFAULT_main_surface_WIDTH,
+        DEFAULT_main_surface_HEIGHT,
+        main_surface,
+        paint_surface,
+    )
     print(tools_menu)
 
     # ! Create the tool
@@ -113,38 +126,71 @@ def main():
     while running:
         # * Update Menu
         menu.window_update(main_surface, paint_surface)
-        
+
         # * Menu Status
         menu_item_active = menu.get_menu_item_active()
         menu_item_list = menu.get_menu_item_list()
 
         # * Menu Item Actions
-        if menu_item_active[menu_item_list[0]]: # Import
+        if menu_item_active[menu_item_list[0]]:  # Import
             clear_imported_image()
             imported_image = menu.import_image(pygame)
-            if imported_image.get_width() < DEFAULT_main_surface_WIDTH-paint_surface_offset_x-tools_menu.get_offset_x() and imported_image.get_height() < DEFAULT_main_surface_HEIGHT-paint_surface_offset_y-tools_menu.get_offset_y(): # If the image fits in the paint surface, update the paint surface
+            if (
+                imported_image.get_width()
+                < DEFAULT_main_surface_WIDTH
+                - paint_surface_offset_x
+                - tools_menu.get_offset_x()
+                and imported_image.get_height()
+                < DEFAULT_main_surface_HEIGHT
+                - paint_surface_offset_y
+                - tools_menu.get_offset_y()
+            ):  # If the image fits in the paint surface, update the paint surface
                 x_item_text = convert_int_to_string(imported_image.get_width())
                 y_item_text = convert_int_to_string(imported_image.get_height())
-                paint_surface_update(x_item_text, y_item_text, PAINT_BACKGROUND_COLOR, tools_menu.get_offset_x(), tools_menu.get_offset_y())
+                paint_surface_update(
+                    x_item_text,
+                    y_item_text,
+                    PAINT_BACKGROUND_COLOR,
+                    tools_menu.get_offset_x(),
+                    tools_menu.get_offset_y(),
+                )
             else:
                 imported_image = None
-                paint_surface_update(x_item_text, y_item_text, PAINT_BACKGROUND_COLOR, tools_menu.get_offset_x(), tools_menu.get_offset_y())
+                paint_surface_update(
+                    x_item_text,
+                    y_item_text,
+                    PAINT_BACKGROUND_COLOR,
+                    tools_menu.get_offset_x(),
+                    tools_menu.get_offset_y(),
+                )
             menu_item_active[menu_item_list[0]] = False
-        if menu_item_active[menu_item_list[1]]: # Export
+        if menu_item_active[menu_item_list[1]]:  # Export
             menu.export_image(pygame)
-            paint_surface_update(x_item_text, y_item_text, PAINT_BACKGROUND_COLOR, tools_menu.get_offset_x(), tools_menu.get_offset_y())
+            paint_surface_update(
+                x_item_text,
+                y_item_text,
+                PAINT_BACKGROUND_COLOR,
+                tools_menu.get_offset_x(),
+                tools_menu.get_offset_y(),
+            )
             menu_item_active[menu_item_list[1]] = False
-        if menu_item_active[menu_item_list[2]]: # Dimension
+        if menu_item_active[menu_item_list[2]]:  # Dimension
             clear_imported_image()
-            paint_surface_update(x_item_text, y_item_text, PAINT_BACKGROUND_COLOR, tools_menu.get_offset_x(), tools_menu.get_offset_y())
+            paint_surface_update(
+                x_item_text,
+                y_item_text,
+                PAINT_BACKGROUND_COLOR,
+                tools_menu.get_offset_x(),
+                tools_menu.get_offset_y(),
+            )
             menu_item_active[menu_item_list[2]] = False
-        if menu_item_active[menu_item_list[3]]: # X Item
+        if menu_item_active[menu_item_list[3]]:  # X Item
             y_item_text_active = False
             size_text_active = False
             color_text_active = False
             x_item_text_active = True
             menu_item_active[menu_item_list[3]] = False
-        if menu_item_active[menu_item_list[4]]: # Y Item
+        if menu_item_active[menu_item_list[4]]:  # Y Item
             x_item_text_active = False
             size_text_active = False
             color_text_active = False
@@ -163,7 +209,7 @@ def main():
             if tool_item_active[tool_item_list[i]]:
                 # Set i tool with active state
                 current_layer = tool.set_tool_state(tool_item_list[i], current_layer)
-                #print(current_layer)
+                # print(current_layer)
                 print(drawn_history)
                 # Set i tool with active state False again
                 tool_item_active[tool_item_list[i]] = False
@@ -172,16 +218,35 @@ def main():
         # Draw main_surface with light grey background
         main_surface.fill(WINDOW_BACKGROUND_COLOR)
         # Add the paint_surface to the main_surface
-        main_surface.blit(paint_surface, (paint_surface_offset_x, paint_surface_offset_y))
+        main_surface.blit(
+            paint_surface, (paint_surface_offset_x, paint_surface_offset_y)
+        )
         # Apply imported image to paint surface
-        if imported_image != None and x_item_text == convert_int_to_string(imported_image.get_width()) and y_item_text == convert_int_to_string(imported_image.get_height()):
+        if (
+            imported_image != None
+            and x_item_text == convert_int_to_string(imported_image.get_width())
+            and y_item_text == convert_int_to_string(imported_image.get_height())
+        ):
             paint_surface = imported_image.convert()
 
         # * Draw menu items
         menu.draw_import_export(pygame)
         menu.draw_dimension(pygame)
         x_y_location_list = menu.get_x_y_location_list()
-        menu.draw_max_x_y(pygame, convert_int_to_string(DEFAULT_main_surface_WIDTH-paint_surface_offset_x-tools_menu.get_offset_x()-size_color_field_offset_x), convert_int_to_string(DEFAULT_main_surface_HEIGHT-paint_surface_offset_y-tools_menu.get_offset_y()))
+        menu.draw_max_x_y(
+            pygame,
+            convert_int_to_string(
+                DEFAULT_main_surface_WIDTH
+                - paint_surface_offset_x
+                - tools_menu.get_offset_x()
+                - size_color_field_offset_x
+            ),
+            convert_int_to_string(
+                DEFAULT_main_surface_HEIGHT
+                - paint_surface_offset_y
+                - tools_menu.get_offset_y()
+            ),
+        )
 
         # Create text_surface for X and Y item & selected size, color
         # X, Y
@@ -202,8 +267,12 @@ def main():
         # Add input of X and Y Item to main_surface & size, color
         main_surface.blit(text_x_surface, (x_y_location_list[0], x_y_location_list[1]))
         main_surface.blit(text_y_surface, (x_y_location_list[2], x_y_location_list[3]))
-        main_surface.blit(text_size_surface, (size_field_location[0], size_field_location[1]))    # Store in list (generated in main)
-        main_surface.blit(text_color_surface, (color_field_location[0], color_field_location[1]))
+        main_surface.blit(
+            text_size_surface, (size_field_location[0], size_field_location[1])
+        )  # Store in list (generated in main)
+        main_surface.blit(
+            text_color_surface, (color_field_location[0], color_field_location[1])
+        )
 
         # Draw Cursor for X and Y Item
         if time.time() - cursor_timer > 0.5:
@@ -215,19 +284,34 @@ def main():
             if x_item_text_active:
                 cursor_surface_x_item_text = font.render("_", True, BLACK)
                 cursor_x_item_text = x_y_location_list[0] + text_x_surface.get_width()
-                main_surface.blit(cursor_surface_x_item_text, (cursor_x_item_text, x_y_location_list[1]))
+                main_surface.blit(
+                    cursor_surface_x_item_text,
+                    (cursor_x_item_text, x_y_location_list[1]),
+                )
             if y_item_text_active:
                 cursor_surface_y_item_text = font.render("_", True, BLACK)
                 cursor_y_item_text = x_y_location_list[2] + text_y_surface.get_width()
-                main_surface.blit(cursor_surface_y_item_text, (cursor_y_item_text, x_y_location_list[3]))
+                main_surface.blit(
+                    cursor_surface_y_item_text,
+                    (cursor_y_item_text, x_y_location_list[3]),
+                )
             if size_text_active:
                 cursor_surface_size_text = font.render("_", True, BLACK)
-                cursor_size_text = size_field_location[0] + text_size_surface.get_width()
-                main_surface.blit(cursor_surface_size_text, (cursor_size_text, size_field_location[1]))
+                cursor_size_text = (
+                    size_field_location[0] + text_size_surface.get_width()
+                )
+                main_surface.blit(
+                    cursor_surface_size_text, (cursor_size_text, size_field_location[1])
+                )
             if color_text_active:
                 cursor_surface_color_text = font.render("_", True, BLACK)
-                cursor_color_text = color_field_location[0] + text_color_surface.get_width()
-                main_surface.blit(cursor_surface_color_text, (cursor_color_text, color_field_location[1]))
+                cursor_color_text = (
+                    color_field_location[0] + text_color_surface.get_width()
+                )
+                main_surface.blit(
+                    cursor_surface_color_text,
+                    (cursor_color_text, color_field_location[1]),
+                )
 
         # * Draw tools menu items
         tools_menu.draw(pygame)
@@ -239,7 +323,9 @@ def main():
         # (mostly draw and draw_on_mouse functions)
 
         # Clear
-        clear_state = tool.get_clear().clear_all(paint_surface, PAINT_BACKGROUND_COLOR, tool, drawn_history)
+        clear_state = tool.get_clear().clear_all(
+            paint_surface, PAINT_BACKGROUND_COLOR, tool, drawn_history
+        )
         if clear_state:
             imported_image = None
             current_layer = 0
@@ -272,11 +358,26 @@ def main():
                 running = False
             elif event.type == pygame.VIDEORESIZE:
                 # Update the main_surface width and height when the window is resized
-                DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT = event.w, event.h
-                main_surface = pygame.display.set_mode((DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT), pygame.RESIZABLE)
-                print("Window resized to:", DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT)
+                DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT = (
+                    event.w,
+                    event.h,
+                )
+                main_surface = pygame.display.set_mode(
+                    (DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT),
+                    pygame.RESIZABLE,
+                )
+                print(
+                    "Window resized to:",
+                    DEFAULT_main_surface_WIDTH,
+                    DEFAULT_main_surface_HEIGHT,
+                )
                 # Update the tools menu sizes when the window is resized
-                tools_menu.update_window(DEFAULT_main_surface_WIDTH, DEFAULT_main_surface_HEIGHT, main_surface, paint_surface)
+                tools_menu.update_window(
+                    DEFAULT_main_surface_WIDTH,
+                    DEFAULT_main_surface_HEIGHT,
+                    main_surface,
+                    paint_surface,
+                )
                 print(tools_menu)
 
             elif event.type == pygame.KEYDOWN:
@@ -322,7 +423,7 @@ def main():
                             selected_color += event.unicode
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    print('Left mouse button pressed')
+                    print("Left mouse button pressed")
                     # Interacting with menu items if mouse is within at least one menu item
                     menu.collision(mouse_x, mouse_y)
                     # Interacting with tools menu items if mouse is within at least one tools menu item
@@ -342,38 +443,110 @@ def main():
                         color_text_active = True
                     # Interact with paint_surface if mouse is within the paint surface
                     drawing = True
-                    if paint_surface_collision(mouse_x, mouse_y, paint_surface_offset_x, paint_surface_offset_y, paint_surface_width, paint_surface_height):
+                    if paint_surface_collision(
+                        mouse_x,
+                        mouse_y,
+                        paint_surface_offset_x,
+                        paint_surface_offset_y,
+                        paint_surface_width,
+                        paint_surface_height,
+                    ):
                         # Pencil
-                        tool.get_pencil().append(paint_mouse_x, paint_mouse_y, drawn_history, current_layer)
+                        tool.get_pencil().append(
+                            paint_mouse_x, paint_mouse_y, drawn_history, current_layer
+                        )
                         # Pen
-                        tool.get_pen().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), selected_color, drawn_history, current_layer)
+                        tool.get_pen().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            selected_color,
+                            drawn_history,
+                            current_layer,
+                        )
                         # Eraser
-                        tool.get_eraser().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), drawn_history, current_layer)
+                        tool.get_eraser().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            drawn_history,
+                            current_layer,
+                        )
                         # Rectangle
-                        tool.get_rectangle().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), selected_color, drawn_history, current_layer)
+                        tool.get_rectangle().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            selected_color,
+                            drawn_history,
+                            current_layer,
+                        )
                         # Circle
-                        tool.get_circle().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), selected_color, drawn_history, current_layer)
+                        tool.get_circle().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            selected_color,
+                            drawn_history,
+                            current_layer,
+                        )
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    print('Left mouse button released')
+                    print("Left mouse button released")
                     drawing = False
             elif event.type == pygame.MOUSEMOTION:
                 # Mouse Hover effect
                 tools_menu.hover_tool(mouse_x, mouse_y)
 
                 # Only append the data if the mouse is within the paint surface
-                if paint_surface_collision(mouse_x, mouse_y, paint_surface_offset_x, paint_surface_offset_y, paint_surface_width, paint_surface_height):
+                if paint_surface_collision(
+                    mouse_x,
+                    mouse_y,
+                    paint_surface_offset_x,
+                    paint_surface_offset_y,
+                    paint_surface_width,
+                    paint_surface_height,
+                ):
                     if drawing:
                         # Pencil
-                        tool.get_pencil().append(paint_mouse_x, paint_mouse_y, drawn_history, current_layer)
+                        tool.get_pencil().append(
+                            paint_mouse_x, paint_mouse_y, drawn_history, current_layer
+                        )
                         # Pen
-                        tool.get_pen().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), selected_color, drawn_history, current_layer)
+                        tool.get_pen().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            selected_color,
+                            drawn_history,
+                            current_layer,
+                        )
                         # Eraser
-                        tool.get_eraser().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), drawn_history, current_layer)
+                        tool.get_eraser().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            drawn_history,
+                            current_layer,
+                        )
                         # Rectangle
-                        tool.get_rectangle().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), selected_color, drawn_history, current_layer)
+                        tool.get_rectangle().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            selected_color,
+                            drawn_history,
+                            current_layer,
+                        )
                         # Circle
-                        tool.get_circle().append(paint_mouse_x, paint_mouse_y, convert_string_to_int(selected_size), selected_color, drawn_history, current_layer)
+                        tool.get_circle().append(
+                            paint_mouse_x,
+                            paint_mouse_y,
+                            convert_string_to_int(selected_size),
+                            selected_color,
+                            drawn_history,
+                            current_layer,
+                        )
 
         # ! Update the display
         pygame.display.flip()
@@ -382,8 +555,15 @@ def main():
     pygame.quit()
     sys.exit()
 
+
 # Update paint surface
-def paint_surface_update(width: int, height: int, color: tuple, tools_menu_offset_x: int, tools_menu_offset_y: int):
+def paint_surface_update(
+    width: int,
+    height: int,
+    color: tuple,
+    tools_menu_offset_x: int,
+    tools_menu_offset_y: int,
+):
     global DEFAULT_main_surface_WIDTH
     global DEFAULT_main_surface_HEIGHT
     global paint_surface
@@ -395,17 +575,30 @@ def paint_surface_update(width: int, height: int, color: tuple, tools_menu_offse
     height = convert_string_to_int(height)
     global size_color_field_offset_x
 
-    if width == paint_surface_width and height == paint_surface_height: # If the width and height are the same, do not update the paint surface
+    if (
+        width == paint_surface_width and height == paint_surface_height
+    ):  # If the width and height are the same, do not update the paint surface
         return
-    if width <= 0 or height <= 0: # If the width and height are less than 0, do not update the paint surface
+    if (
+        width <= 0 or height <= 0
+    ):  # If the width and height are less than 0, do not update the paint surface
         return
-    if width > DEFAULT_main_surface_WIDTH-paint_surface_offset_x-tools_menu_offset_x-size_color_field_offset_x or height > DEFAULT_main_surface_HEIGHT-paint_surface_offset_y-tools_menu_offset_y: # If the width and height are greater than the main surface minus menu offset & tools menu offset, do not update the paint surface
+    if (
+        width
+        > DEFAULT_main_surface_WIDTH
+        - paint_surface_offset_x
+        - tools_menu_offset_x
+        - size_color_field_offset_x
+        or height
+        > DEFAULT_main_surface_HEIGHT - paint_surface_offset_y - tools_menu_offset_y
+    ):  # If the width and height are greater than the main surface minus menu offset & tools menu offset, do not update the paint surface
         return
 
     paint_surface_width = width
     paint_surface_height = height
     paint_surface = pygame.Surface((paint_surface_width, paint_surface_height))
     paint_surface.fill(color)
+
 
 # Clear paint surface
 def clear_imported_image():
@@ -414,14 +607,28 @@ def clear_imported_image():
 
     # Clear image from surface
     imported_image = None
-    
+
 
 # Check if mouse is within the paint surface
-def paint_surface_collision(mouse_x: int, mouse_y, paint_surface_offset_x: int, paint_surface_offset_y: int, paint_surface_width: int, paint_surface_height: int):
-    if mouse_x > paint_surface_offset_x and mouse_x < paint_surface_offset_x + paint_surface_width:
-        if mouse_y > paint_surface_offset_y and mouse_y < paint_surface_offset_y + paint_surface_height:
+def paint_surface_collision(
+    mouse_x: int,
+    mouse_y,
+    paint_surface_offset_x: int,
+    paint_surface_offset_y: int,
+    paint_surface_width: int,
+    paint_surface_height: int,
+):
+    if (
+        mouse_x > paint_surface_offset_x
+        and mouse_x < paint_surface_offset_x + paint_surface_width
+    ):
+        if (
+            mouse_y > paint_surface_offset_y
+            and mouse_y < paint_surface_offset_y + paint_surface_height
+        ):
             return True
     return False
+
 
 def convert_string_to_int(string):
     try:
@@ -433,16 +640,18 @@ def convert_string_to_int(string):
         # Handle the ValueError if the string cannot be converted to an integer
         print("Error: The string is not a valid integer.")
         return 0  # Return a default value in case of an error
-    
+
+
 def convert_int_to_string(integer):
     return str(integer)
+
 
 def is_valid_size(size):
     try:
         # Check if the value is an integer
         if not isinstance(size, int):
             return False
-        
+
         # Check if the integer value is in the range (1, 100)
         if 0 < size <= 99:
             return True
@@ -452,9 +661,10 @@ def is_valid_size(size):
         # If the value is not an integer, catch the ValueError
         return False
 
+
 def is_valid_hex_color(hex_color):
     # Regular expression for a 24-bit color code in hexadecimal format
-    hex_color_pattern = re.compile(r'^#([0-9a-fA-F]{6})$')
+    hex_color_pattern = re.compile(r"^#([0-9a-fA-F]{6})$")
 
     # Check if the input string matches the pattern
     match = hex_color_pattern.match(hex_color)
@@ -462,6 +672,7 @@ def is_valid_hex_color(hex_color):
     # Return True if there is a match, otherwise False
     return bool(match)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Call main function
     main()

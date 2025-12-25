@@ -16,12 +16,27 @@ def test_paint_surface_collision():
     paint_surface_height = 100
 
     # Test case 1: Mouse is within the paint surface
-    result = paint_surface_collision(mouse_x, mouse_y, paint_surface_offset_x, paint_surface_offset_y, paint_surface_width, paint_surface_height)
+    result = paint_surface_collision(
+        mouse_x,
+        mouse_y,
+        paint_surface_offset_x,
+        paint_surface_offset_y,
+        paint_surface_width,
+        paint_surface_height,
+    )
     assert result is True
 
     # Test case 2: Mouse is outside the paint surface
-    result = paint_surface_collision(200, 200, paint_surface_offset_x, paint_surface_offset_y, paint_surface_width, paint_surface_height)
+    result = paint_surface_collision(
+        200,
+        200,
+        paint_surface_offset_x,
+        paint_surface_offset_y,
+        paint_surface_width,
+        paint_surface_height,
+    )
     assert result is False
+
 
 def test_convert_string_to_int():
     # Test case 1: Convert a valid string to an integer
@@ -36,6 +51,7 @@ def test_convert_string_to_int():
     result = convert_string_to_int("abc")
     assert result == 0  # Should return the default value
 
+
 def test_convert_int_to_string():
     # Test case 1: Convert a positive integer to a string
     result = convert_int_to_string(42)
@@ -44,6 +60,7 @@ def test_convert_int_to_string():
     # Test case 2: Convert a negative integer to a string
     result = convert_int_to_string(-10)
     assert result == "-10"
+
 
 def test_is_valid_size():
     # Test case 1: Valid size (within the range)
@@ -61,6 +78,7 @@ def test_is_valid_size():
     # Test case 4: Invalid size (not an integer)
     result = is_valid_size("invalid")
     assert not result
+
 
 def test_is_valid_hex_color():
     # Test case 1: Valid hex color code
@@ -83,6 +101,7 @@ def test_is_valid_hex_color():
     result = is_valid_hex_color("#ghijkl")
     assert not result
 
+
 # Menu Tests:
 def test_menu_init():
     window_width = 800
@@ -102,6 +121,7 @@ def test_menu_init():
     assert isinstance(menu.menu_item_active, dict)
     assert menu.menu_import_path == "src/imports/paint2d_import.png"
     assert menu.menu_export_path == "src/exports/paint2d_export.png"
+
 
 # ToolMenu Tests:
 def test_tools_menu_init():
@@ -123,17 +143,43 @@ def test_tools_menu_init():
     assert isinstance(tools_menu.tool_item_selected, dict)
     assert isinstance(tools_menu.tool_item_hover, dict)
 
+
 # Tool Tests:
 def test_tool_init():
     tool = Tool()
 
     assert isinstance(tool.tool_object_dict, dict)
-    assert tool.tool_item_list == ["clear", "fill", "pencil", "pen", "eraser", "rectangle", "circle"]
-    assert tool.tool_image_list == ['src/img/tool_clear.png', 'src/img/tool_fill.png', 'src/img/tool_pencil.png', 'src/img/tool_pen.png', 'src/img/tool_eraser.png', 'src/img/tool_rectangle.png', 'src/img/tool_circle.png']
-    assert tool.tool_image_hover_list == ['src/img/tool_hover_clear.png', 'src/img/tool_hover_fill.png', 'src/img/tool_hover_pencil.png', 'src/img/tool_hover_pen.png', 'src/img/tool_hover_eraser.png', 'src/img/tool_hover_rectangle.png', 'src/img/tool_hover_circle.png']
+    assert tool.tool_item_list == [
+        "clear",
+        "fill",
+        "pencil",
+        "pen",
+        "eraser",
+        "rectangle",
+        "circle",
+    ]
+    assert tool.tool_image_list == [
+        "src/img/tool_clear.png",
+        "src/img/tool_fill.png",
+        "src/img/tool_pencil.png",
+        "src/img/tool_pen.png",
+        "src/img/tool_eraser.png",
+        "src/img/tool_rectangle.png",
+        "src/img/tool_circle.png",
+    ]
+    assert tool.tool_image_hover_list == [
+        "src/img/tool_hover_clear.png",
+        "src/img/tool_hover_fill.png",
+        "src/img/tool_hover_pencil.png",
+        "src/img/tool_hover_pen.png",
+        "src/img/tool_hover_eraser.png",
+        "src/img/tool_hover_rectangle.png",
+        "src/img/tool_hover_circle.png",
+    ]
     assert isinstance(tool.tool_states, dict)
     assert len(tool.tool_states) == len(tool.tool_item_list)
     assert all(value is False for value in tool.tool_states.values())
+
 
 def test_tool_set_tool_state():
     tool = Tool()
@@ -160,6 +206,7 @@ def test_tool_set_tool_state():
     assert not tool.is_tool_state("rectangle")
     assert new_layer == current_layer + 3
 
+
 def test_tool_getters():
     tool = Tool()
 
@@ -168,9 +215,33 @@ def test_tool_getters():
     assert isinstance(tool_dict, dict)
     assert all(tool_item in tool_dict for tool_item in tool.tool_item_list)
 
-    assert tool.get_tool_item_list() == ["clear", "fill", "pencil", "pen", "eraser", "rectangle", "circle"]
-    assert tool.get_tool_image_list() == ['src/img/tool_clear.png', 'src/img/tool_fill.png', 'src/img/tool_pencil.png', 'src/img/tool_pen.png', 'src/img/tool_eraser.png', 'src/img/tool_rectangle.png', 'src/img/tool_circle.png']
-    assert tool.get_tool_image_hover_list() == ['src/img/tool_hover_clear.png', 'src/img/tool_hover_fill.png', 'src/img/tool_hover_pencil.png', 'src/img/tool_hover_pen.png', 'src/img/tool_hover_eraser.png', 'src/img/tool_hover_rectangle.png', 'src/img/tool_hover_circle.png']
+    assert tool.get_tool_item_list() == [
+        "clear",
+        "fill",
+        "pencil",
+        "pen",
+        "eraser",
+        "rectangle",
+        "circle",
+    ]
+    assert tool.get_tool_image_list() == [
+        "src/img/tool_clear.png",
+        "src/img/tool_fill.png",
+        "src/img/tool_pencil.png",
+        "src/img/tool_pen.png",
+        "src/img/tool_eraser.png",
+        "src/img/tool_rectangle.png",
+        "src/img/tool_circle.png",
+    ]
+    assert tool.get_tool_image_hover_list() == [
+        "src/img/tool_hover_clear.png",
+        "src/img/tool_hover_fill.png",
+        "src/img/tool_hover_pencil.png",
+        "src/img/tool_hover_pen.png",
+        "src/img/tool_hover_eraser.png",
+        "src/img/tool_hover_rectangle.png",
+        "src/img/tool_hover_circle.png",
+    ]
 
     assert tool.get_clear() is not None
     assert tool.get_fill() is not None

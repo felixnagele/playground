@@ -1,17 +1,18 @@
 # Clear
 from tool_pencil import Pencil
 
+
 class Clear:
     state = False
 
     # Constructor
     def __init__(self):
         pass
-    
+
     # String representation
     def __str__(self):
         return f"Clear: {self.state}"
-    
+
     def set_state(self, state: bool):
         self.state = state
 
