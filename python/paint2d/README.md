@@ -42,10 +42,22 @@ How to install pygame?
 pip install pygame
 ```
 
+How to install pytest?
+
+```bash
+pip install pytest
+```
+
 ## Usage
 
 To run the Paint2D application, execute the following command in your terminal:
 
 ```bash
 python main.py
+```
+
+To run the tests, execute:
+
+```bash
+python -m pytest tests/
 ```
