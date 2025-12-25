@@ -45,10 +45,7 @@ class Circle:
             applied_color = (0, 0, 0)
             if self.is_valid_hex_color(color):
                 applied_color = self.hex_to_rgb(color)
-            if applied_size == 1:
-                self.data.append([(mouse_x, mouse_y), applied_size, applied_color])
-            else:
-                self.data.append([(mouse_x, mouse_y), applied_size // 2, applied_color])
+            self.data.append([(mouse_x, mouse_y), applied_size, applied_color])
             # print(self.data)
 
             drawn_history.update(

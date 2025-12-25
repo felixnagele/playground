@@ -31,7 +31,7 @@ class Rectangle:
             pygame.draw.rect(
                 surface,
                 colors,
-                (self.data_x[i], self.data_y[i], sizes, sizes),
+                (self.data_x[i], self.data_y[i], sizes * 2, sizes * 2),
                 self.border,
             )
 

@@ -134,6 +134,12 @@ def main():
         # * Menu Item Actions
         if menu_item_active[menu_item_list[0]]:  # Import
             clear_imported_image()
+            tool.get_pencil().clear()
+            tool.get_pen().clear()
+            tool.get_eraser().clear()
+            tool.get_rectangle().clear()
+            tool.get_circle().clear()
+            drawn_history.clear()
             imported_image = menu.import_image(pygame)
             if (
                 imported_image.get_width()
@@ -217,17 +223,18 @@ def main():
         # ! Draw
         # Draw main_surface with light grey background
         main_surface.fill(WINDOW_BACKGROUND_COLOR)
-        # Add the paint_surface to the main_surface
-        main_surface.blit(
-            paint_surface, (paint_surface_offset_x, paint_surface_offset_y)
-        )
-        # Apply imported image to paint surface
+        # Apply imported image to paint surface once at the beginning
         if (
             imported_image != None
             and x_item_text == convert_int_to_string(imported_image.get_width())
             and y_item_text == convert_int_to_string(imported_image.get_height())
         ):
-            paint_surface = imported_image.convert()
+            paint_surface.blit(imported_image, (0, 0))
+            imported_image = None
+        # Add the paint_surface to the main_surface
+        main_surface.blit(
+            paint_surface, (paint_surface_offset_x, paint_surface_offset_y)
+        )
 
         # * Draw menu items
         menu.draw_import_export(pygame)
