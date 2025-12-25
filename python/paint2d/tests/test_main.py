@@ -119,8 +119,8 @@ def test_menu_init():
     assert isinstance(menu.menu_item_x, list)
     assert isinstance(menu.menu_item_y, list)
     assert isinstance(menu.menu_item_active, dict)
-    assert menu.menu_import_path == "src/imports/paint2d_import.png"
-    assert menu.menu_export_path == "src/exports/paint2d_export.png"
+    assert menu.menu_import_path == "rsc/imports/paint2d_import.png"
+    assert menu.menu_export_path == "rsc/exports/paint2d_export.png"
 
 
 # ToolMenu Tests:
@@ -159,22 +159,22 @@ def test_tool_init():
         "circle",
     ]
     assert tool.tool_image_list == [
-        "src/img/tool_clear.png",
-        "src/img/tool_fill.png",
-        "src/img/tool_pencil.png",
-        "src/img/tool_pen.png",
-        "src/img/tool_eraser.png",
-        "src/img/tool_rectangle.png",
-        "src/img/tool_circle.png",
+        "rsc/img/tool_clear.png",
+        "rsc/img/tool_fill.png",
+        "rsc/img/tool_pencil.png",
+        "rsc/img/tool_pen.png",
+        "rsc/img/tool_eraser.png",
+        "rsc/img/tool_rectangle.png",
+        "rsc/img/tool_circle.png",
     ]
     assert tool.tool_image_hover_list == [
-        "src/img/tool_hover_clear.png",
-        "src/img/tool_hover_fill.png",
-        "src/img/tool_hover_pencil.png",
-        "src/img/tool_hover_pen.png",
-        "src/img/tool_hover_eraser.png",
-        "src/img/tool_hover_rectangle.png",
-        "src/img/tool_hover_circle.png",
+        "rsc/img/tool_hover_clear.png",
+        "rsc/img/tool_hover_fill.png",
+        "rsc/img/tool_hover_pencil.png",
+        "rsc/img/tool_hover_pen.png",
+        "rsc/img/tool_hover_eraser.png",
+        "rsc/img/tool_hover_rectangle.png",
+        "rsc/img/tool_hover_circle.png",
     ]
     assert isinstance(tool.tool_states, dict)
     assert len(tool.tool_states) == len(tool.tool_item_list)
@@ -225,22 +225,22 @@ def test_tool_getters():
         "circle",
     ]
     assert tool.get_tool_image_list() == [
-        "src/img/tool_clear.png",
-        "src/img/tool_fill.png",
-        "src/img/tool_pencil.png",
-        "src/img/tool_pen.png",
-        "src/img/tool_eraser.png",
-        "src/img/tool_rectangle.png",
-        "src/img/tool_circle.png",
+        "rsc/img/tool_clear.png",
+        "rsc/img/tool_fill.png",
+        "rsc/img/tool_pencil.png",
+        "rsc/img/tool_pen.png",
+        "rsc/img/tool_eraser.png",
+        "rsc/img/tool_rectangle.png",
+        "rsc/img/tool_circle.png",
     ]
     assert tool.get_tool_image_hover_list() == [
-        "src/img/tool_hover_clear.png",
-        "src/img/tool_hover_fill.png",
-        "src/img/tool_hover_pencil.png",
-        "src/img/tool_hover_pen.png",
-        "src/img/tool_hover_eraser.png",
-        "src/img/tool_hover_rectangle.png",
-        "src/img/tool_hover_circle.png",
+        "rsc/img/tool_hover_clear.png",
+        "rsc/img/tool_hover_fill.png",
+        "rsc/img/tool_hover_pencil.png",
+        "rsc/img/tool_hover_pen.png",
+        "rsc/img/tool_hover_eraser.png",
+        "rsc/img/tool_hover_rectangle.png",
+        "rsc/img/tool_hover_circle.png",
     ]
 
     assert tool.get_clear() is not None

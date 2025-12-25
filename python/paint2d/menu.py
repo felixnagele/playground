@@ -22,8 +22,8 @@ class Menu:
     menu_item_active = dict.fromkeys(
         menu_item_list, False
     )  # Convert list to dict with all values on False
-    menu_import_path = "src/imports/paint2d_import.png"
-    menu_export_path = "src/exports/paint2d_export.png"
+    menu_import_path = "rsc/imports/paint2d_import.png"
+    menu_export_path = "rsc/exports/paint2d_export.png"
     menu_x_y_location_list = []
     menu_x_y_font_size = 30
 

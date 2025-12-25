@@ -9,8 +9,8 @@ from tool_circle import Circle
 
 class Tool:
     tool_item_list = ["clear", "fill", "pencil", "pen", "eraser", "rectangle", "circle"]
-    tool_image_path_pre = "src/img/tool_"
-    tool_image_hover_path_pre = "src/img/tool_hover_"
+    tool_image_path_pre = "rsc/img/tool_"
+    tool_image_hover_path_pre = "rsc/img/tool_hover_"
     tool_image_list = [
         (f"{tool_image_path_pre}clear.png"),
         (f"{tool_image_path_pre}fill.png"),

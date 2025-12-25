@@ -34,7 +34,7 @@ def main():
     global DEFAULT_main_surface_WIDTH
     global DEFAULT_main_surface_HEIGHT
     WINDOW_CAPTION = "Paint2D"
-    WINDOW_ICON_PATH = "src/img/paint2d_icon.png"
+    WINDOW_ICON_PATH = "rsc/img/paint2d_icon.png"
 
     # Define paint surface variables
     global paint_surface
