@@ -1,16 +1,12 @@
 @echo off
-title Matrix
 color 0a
-mode 1000
-goto Greeting
-
-:Greeting
 cls
-echo Hello
-pause
-cls
-goto Matrix
 
-:Matrix
-echo %random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%%random%
-goto Matrix
+:: Infinite loop for random numbers
+:loop
+echo %random%%random%%random%%random%%random%%random%%random%
+
+:: Short delay using ping (50 ms)
+ping 127.0.0.1 -n 1 -w 50 >nul
+
+goto loop
