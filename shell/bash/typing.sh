@@ -3,7 +3,7 @@
 text="Hi, my name is Felix."
 delay=0.20  # Seconds between each character
 
-# Show cursor
+# Hide cursor
 echo -ne "\e[?25l"
 trap "echo -ne '\e[0m\e[?25h'; exit" INT
 
