@@ -8,9 +8,9 @@ echo -ne "\e[?25l"
 # Ensure cursor is shown again on exit
 trap "echo -ne '\e[0m\e[?25h'; exit" INT
 
+i=0
 while true; do
-  for i in {1..50}; do
-    printf "\r%s" "${chars:i%4:1}"
-    sleep 0.1
-  done
+  printf "\r%s" "${chars:i%4:1}"
+  i=$((i + 1))
+  sleep 0.1
 done
