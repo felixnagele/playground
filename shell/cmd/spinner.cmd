@@ -12,7 +12,7 @@ for /l %%i in (0,1,3) do (
   cls
   echo !c!
 
-  :: Slower spin
+  :: Faster spin
   timeout /t 0 >nul
 )
 goto loop
