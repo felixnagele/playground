@@ -59,8 +59,8 @@ Guidelines for Copilot / AI assistants when authoring code, suggestions, or PR d
 
 - Non-trivial changes must include tests. State how to run tests and CI expectations in PRs.
 - Prefer deterministic tests (fixed seeds, mocked time, dependency injection).
-- Suggest CI pipelines for linting, tests, dependency checks, and secret scanning.
-- Do not introduce or scaffold new CI systems unless the project already uses one or the user explicitly asks for it.
+- Suggest, at a high level, what CI pipelines for linting, tests, dependency checks, and secret scanning could include (informational only).
+- Do not introduce or scaffold new CI systems or CI configuration files unless the project already uses one or the user explicitly asks for it.
 
 ## PR / commit guidance
 
