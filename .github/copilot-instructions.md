@@ -36,7 +36,6 @@ Guidelines for Copilot / AI assistants when authoring code, suggestions, or PR d
 - Prefer **TypeScript** over plain JavaScript when project uses or can adopt TS.
 - Favor strongly-typed languages / static typing where practical.
 - Avoid adding JavaScript-only libraries; prefer well-typed alternatives.
-- Avoid platform-specific scripts if cross-platform alternatives exist.
 - Prefer **modern Java versions**, ideally **≥ JDK 25 LTS**, or otherwise the most modern Java version already used in the project, and use the language features supported by that version.
 - Prefer **C++** over **C** for new native code, unless low-level constraints explicitly require C.
 - Prefer **CMake** or other modern build systems over legacy or project-specific ad-hoc build setups.
