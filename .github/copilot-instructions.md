@@ -65,7 +65,7 @@ Guidelines for Copilot / AI assistants when authoring code, suggestions, or PR d
 
 ## PR / commit guidance
 
-- Generate commit messages in imperative form; keep the subject ≤72 characters and start with a Conventional Commit–style action verb (e.g., Add, Update, Remove, Fix, Refactor).
+- Generate commit messages in imperative form; keep the subject ≤50 characters (≤72 characters including any Conventional Commit prefix) and start with a Conventional Commit–style action verb (e.g., Add, Update, Remove, Fix, Refactor).
 - PR description must include:
   - One-line summary
   - Key changes (bullets)
