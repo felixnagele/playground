@@ -90,16 +90,21 @@ ONLY comment when there is clear evidence of:
 - Breaking changes (public APIs, contracts, schemas)
 - Logical errors that will cause bugs
 - Severe performance issues (algorithmic or blocking in hot paths)
+- Naming that is clearly incorrect or misleading (e.g., contradict behavior, domain language, or API contracts)
+- Missing critical edge cases in logic or tests
+- Insufficient test coverage for non-trivial changes
 
 DO NOT comment on:
 
 - Style, formatting, whitespace, lint issues
-- Naming, unless clearly incorrect or misleading
+- Routine or subjective naming suggestions
 - Nitpicks, micro-optimizations, or optional improvements
 - Alternative implementations or personal preferences
 
 Rules:
 
 - If unsure → do NOT comment
-- Comments must be actionable and concise
+- Comments must be concise and actionable
 - Prefer silence over low-confidence feedback
+- Avoid redundant comments on the same issue
+- Avoid comments on experimental or POC code unless a critical risk exists
