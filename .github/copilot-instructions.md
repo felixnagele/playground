@@ -82,11 +82,6 @@ Guidelines for Copilot / AI assistants when authoring code, suggestions, or PR d
 - Architectural changes that touch multiple modules or introduce new services.
 - If unable to verify time-sensitive facts or external APIs.
 
-## Final rule
-
-If unclear about scope or risk, respond exactly:
-`UNSURE: clarification needed: <specific question>`
-
 ## Copilot Code Review Rules
 
 ONLY comment when there is clear evidence of:
