@@ -87,3 +87,25 @@ Guidelines for Copilot / AI assistants when authoring code, suggestions, or PR d
 
 If unclear about scope or risk, respond exactly:
 `UNSURE: clarification needed: <specific question>`
+
+## Copilot Code Review Rules
+
+ONLY comment when there is clear evidence of:
+
+- Security vulnerabilities
+- Breaking changes (public APIs, contracts, schemas)
+- Logical errors that will cause bugs
+- Severe performance issues (algorithmic or blocking in hot paths)
+
+DO NOT comment on:
+
+- Style, formatting, whitespace, lint issues
+- Naming, unless clearly incorrect or misleading
+- Nitpicks, micro-optimizations, or optional improvements
+- Alternative implementations or personal preferences
+
+Rules:
+
+- If unsure → do NOT comment
+- Comments must be actionable and concise
+- Prefer silence over low-confidence feedback
