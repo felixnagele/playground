@@ -11,6 +11,7 @@ IGNORED_SUFFIXES = (
     ".webp",
     ".svg",
     ".ico",
+    ".icns",
     ".bmp",
     ".tif",
     ".tiff",
