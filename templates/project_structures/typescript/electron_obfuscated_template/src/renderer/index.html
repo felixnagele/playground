@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Playwright Browser</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo-section">
+          <img src="assets/icon.png" alt="App Icon" class="logo" />
+          <h1 class="title">Playwright Browser</h1>
+        </div>
+        <button class="theme-toggle" id="theme-toggle">
+          <span id="theme-icon">🌙</span>
+          <span id="theme-text">Dark</span>
+        </button>
+      </header>
+      <main class="main-content">
+        <div class="button-container">
+          <button class="start-button" id="start-button">Start Browser</button>
+        </div>
+        <div class="status-container">
+          <div class="status-label">Status</div>
+          <div class="status-text">
+            <span class="status-indicator" id="status-indicator"></span>
+            <span id="status-message">Ready</span>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="./renderer.js"></script>
+  </body>
+</html>

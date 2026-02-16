@@ -1,0 +1,84 @@
+{
+  "name": "playwright-electron-obfuscated-template",
+  "productName": "Playwright Electron Obfuscated Template",
+  "version": "1.0.0",
+  "author": "Felix",
+  "description": "A template for Electron applications using Playwright with obfuscated code.",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "clean": "rimraf build dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "bundle-renderer": "node esbuild.renderer.mjs",
+    "copy-assets-build": "copyfiles -u 1 \"src/renderer/**/*.{html,css,js}\" \"src/renderer/assets/**/*\" build",
+    "copy-assets-dist": "copyfiles -u 1 \"src/renderer/**/*.{html,css,js}\" \"src/renderer/assets/**/*\" dist",
+    "obfuscate": "javascript-obfuscator build --output dist --config obfuscator.config.js --source-map false",
+    "build": "npm run clean && npm run compile && npm run bundle-renderer && npm run copy-assets-build && npm run obfuscate && npm run copy-assets-dist",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron ./build/main/main.js",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "validate": "npm run type-check && npm run lint && npm run format:check",
+    "fix": "npm run lint:fix && npm run format",
+    "test": "vitest --coverage --run",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "io.github.felixnagele.heraldapp",
+    "productName": "HeraldApp",
+    "files": [
+      "dist/**/*",
+      "!dist/**/*.map",
+      "node_modules/**/*"
+    ],
+    "extraMetadata": {
+      "main": "dist/main/main.js"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "resources/macos/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "resources/windows/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "resources/linux/icon.png",
+      "category": "Utility"
+    },
+    "directories": {
+      "buildResources": "resources"
+    }
+  },
+  "dependencies": {
+    "playwright": "^1.57.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^25.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/eslint-plugin": "^1.6.6",
+    "@vitest/ui": "^4.0.18",
+    "copyfiles": "^2.4.1",
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0",
+    "esbuild": "^0.27.3",
+    "eslint": "^9.39.2",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "javascript-obfuscator": "^5.3.0",
+    "prettier": "^3.7.4",
+    "rimraf": "^6.1.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.52.0",
+    "vitest": "^4.0.18"
+  }
+}
