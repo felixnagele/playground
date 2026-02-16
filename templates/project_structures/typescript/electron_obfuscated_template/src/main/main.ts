@@ -4,8 +4,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 
 import { IPC_CHANNELS } from '../shared/ipc-channels';
 import type { BrowserStatus } from '../shared/types';
-
-import { BrowserManager } from './browser-manager';
+import { BrowserManager } from '../renderer/ui/browser';
 
 let mainWindow: BrowserWindow | null = null;
 const browserManager = new BrowserManager();
