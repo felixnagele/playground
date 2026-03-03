@@ -1,158 +1,274 @@
 import os
 import sys
 import subprocess
-import platform
-
-IGNORED_SUFFIXES = (
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".webp",
-    ".svg",
-    ".ico",
-    ".icns",
-    ".bmp",
-    ".tif",
-    ".tiff",
-    ".pdf",
-    ".zip",
-    ".tar",
-    ".gz",
-    ".rar",
-    ".7z",
-    ".jar",
-    ".war",
-    ".ear",
-    ".exe",
-    ".dll",
-    ".so",
-    ".bin",
-    ".mwb",
-    ".mwb.bak",
-    ".db",
-    ".sqlite",
-    ".sqlite3",
-    ".class",
-    ".map",
-    ".min.js",
-    ".min.css",
-    ".crx",
-)
+import json
+from pathlib import Path
 
 
-def should_ignore(path: str) -> bool:
+def load_config(custom_config_path=None):
+    """Load default config (extensions, folders) + optional custom config (skip_repos)."""
+    # Step 1: Always load default config
+    default_config_path = Path(__file__).parent / ".checkignore.default.json"
+    if not default_config_path.exists():
+        print(
+            "❌ Default config (.checkignore.default.json) is missing!", file=sys.stderr
+        )
+        sys.exit(1)
+
+    try:
+        with open(default_config_path, "r", encoding="utf-8") as f:
+            config = json.load(f)
+            print(f"📄 Loaded default config: {default_config_path.name}")
+    except Exception as e:
+        print(f"❌ Failed to load default config: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # Ensure skip_repos starts empty (not from default)
+    config["skip_repos"] = []
+
+    # Step 2: If custom config provided, load skip_repos from it
+    if custom_config_path:
+        custom_path = Path(custom_config_path).resolve()
+        if not custom_path.exists():
+            print(f"❌ Custom config not found: {custom_path}", file=sys.stderr)
+            sys.exit(1)
+
+        try:
+            with open(custom_path, "r", encoding="utf-8") as f:
+                custom_config = json.load(f)
+                # Only take skip_repos from custom config
+                config["skip_repos"] = custom_config.get("skip_repos", [])
+                print(f"📄 Loaded skip_repos from: {custom_path}")
+        except Exception as e:
+            print(f"❌ Failed to load custom config: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    return config
+
+
+def should_ignore_file(path: str, config: dict) -> bool:
+    """Check if file should be ignored based on extension."""
     lower = path.lower()
-    return lower.endswith(IGNORED_SUFFIXES)
+    for ext in config.get("ignored_extensions", []):
+        if lower.endswith(ext.lower()):
+            return True
+    return False
+
+
+def should_ignore_folder(folder_name: str, config: dict) -> bool:
+    """Check if folder should be ignored."""
+    return folder_name in config.get("ignored_folders", [])
+
+
+def should_skip_repo(repo_path: str, config: dict) -> bool:
+    """Check if entire repo should be skipped."""
+    repo_name = Path(repo_path).name
+    skip_list = config.get("skip_repos", [])
+
+    # Check by name or full path
+    if repo_name in skip_list:
+        return True
+    if str(Path(repo_path).resolve()) in skip_list:
+        return True
+
+    return False
 
 
 def run_cmd(cmd: str, cwd: str) -> str:
+    """Run shell command and return output."""
     try:
         result = subprocess.run(
-            cmd, cwd=cwd, shell=True, capture_output=True, text=True
+            cmd, cwd=cwd, shell=True, capture_output=True, text=True, timeout=30
         )
         return result.stdout.strip()
     except Exception as e:
-        # Log the error and re-raise to avoid silently treating failures as output.
-        print(f"❌ ERROR running command {cmd!r} in {cwd!r}: {e}", file=sys.stderr)
-        raise
+        print(f"⚠️ Command failed: {e}", file=sys.stderr)
+        return ""
 
 
 def is_git_repo(path: str) -> bool:
+    """Check if path is a git repository."""
     return os.path.isdir(os.path.join(path, ".git"))
 
 
-def find_repos(start_path: str) -> list[str]:
+def find_repos(start_path: str, config: dict) -> list[str]:
+    """Find all git repositories, respecting ignored_folders."""
     repos = []
     for root, dirs, files in os.walk(start_path):
+        # Remove ignored folders from search
+        dirs[:] = [d for d in dirs if not should_ignore_folder(d, config)]
+
         if ".git" in dirs:
             repos.append(root)
-            dirs[:] = [d for d in dirs if d != ".git"]
+            dirs[:] = [d for d in dirs if d != ".git"]  # Don't descend into .git
+
     return repos
 
 
 def get_committed_files(repo_path: str) -> list[str]:
-    try:
-        output = run_cmd("git ls-files", repo_path)
-    except Exception as e:
-        # Failed to list committed files; log and return an empty list.
-        print(
-            f"⚠️ Failed to list committed files in {repo_path!r}: {e}",
-            file=sys.stderr,
-        )
-        return []
+    """Get list of files tracked by git."""
+    output = run_cmd("git ls-files", repo_path)
     if not output:
         return []
     return output.splitlines()
 
 
-def check_eol(repo_path: str) -> None:
-    system = platform.system().lower()
+def check_eol(repo_path: str, config: dict) -> None:
+    """Check for EOL (end-of-line) issues."""
+    output = run_cmd("git ls-files --eol", repo_path)
+    if not output:
+        return
 
-    if "windows" in system:
-        cmd = 'git ls-files --eol | Select-String -NotMatch "i/lf"'
-    else:
-        cmd = 'git ls-files --eol | grep -v "i/lf"'
+    issues = []
+    for line in output.splitlines():
+        if not line.strip():
+            continue
 
-    output = run_cmd(cmd, repo_path)
-    if output:
+        parts = line.split()
+        if len(parts) < 4:
+            continue
+
+        index_eol = parts[0]  # i/lf or i/crlf
+        filepath = " ".join(parts[3:])
+
+        if should_ignore_file(filepath, config):
+            continue
+
+        # Check for non-LF line endings
+        if not index_eol.startswith("i/lf"):
+            issues.append(f"  {filepath}: {index_eol}")
+
+    if issues:
         print(f"\n❌ EOL PROBLEMS in {repo_path}:")
-        print(output)
+        for issue in issues:
+            print(issue)
 
 
-def check_trailing_whitespace(repo_path: str) -> None:
+def check_trailing_whitespace(repo_path: str, config: dict) -> None:
+    """Check for trailing whitespace in files."""
     committed_files = get_committed_files(repo_path)
 
     for rel_path in committed_files:
+        # Skip markdown files (trailing spaces have meaning)
         if rel_path.endswith(".md"):
             continue
-        if should_ignore(rel_path):
+
+        if should_ignore_file(rel_path, config):
             continue
 
         full_path = os.path.join(repo_path, rel_path)
+
         try:
             with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
                 for i, line in enumerate(f, start=1):
-                    if line.rstrip() != line.rstrip("\n\r"):
+                    # Check if line has trailing whitespace
+                    stripped = line.rstrip("\n\r")
+                    if stripped and stripped != stripped.rstrip():
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
-        except (OSError, IOError) as e:
-            print(f"⚠️ Could not read {full_path}: {e}", file=sys.stderr)
+        except (OSError, IOError):
+            # Silently skip files we can't read
+            pass
 
 
-def process_path(path: str) -> None:
-    if is_git_repo(path):
-        print(f"\n📁 Checking repo: {path}")
-        check_eol(path)
-        check_trailing_whitespace(path)
+def check_repo(repo_path: str, config: dict) -> None:
+    """Run all checks on a repository."""
+    if should_skip_repo(repo_path, config):
+        print(f"\n⏭️  Skipping: {repo_path}")
         return
 
-    repos = find_repos(path)
+    print(f"\n📁 Checking: {repo_path}")
+    check_eol(repo_path, config)
+    check_trailing_whitespace(repo_path, config)
+
+
+def process_path(path: str, config: dict) -> None:
+    """Process a path - either a single repo or search for repos."""
+    if not os.path.exists(path):
+        print(f"❌ ERROR: Path does not exist: {path}", file=sys.stderr)
+        return
+
+    if not os.access(path, os.R_OK | os.X_OK):
+        print(f"❌ ERROR: Path is not accessible: {path}", file=sys.stderr)
+        return
+
+    if is_git_repo(path):
+        check_repo(path, config)
+        return
+
+    repos = find_repos(path, config)
     if not repos:
         print(f"\n⚠️ No git repos found in: {path}")
         return
 
     for repo in repos:
-        print(f"\n📁 Checking repo: {repo}")
-        check_eol(repo)
-        check_trailing_whitespace(repo)
+        check_repo(repo, config)
+
+
+def print_usage():
+    print("Usage:")
+    print("  python check.py [path] [--config <file>]")
+    print()
+    print("Arguments:")
+    print(
+        "  path                Optional: Directory to scan (default: current directory)"
+    )
+    print("  --config <file>     Optional: Config file for skip_repos only")
+    print("  --help, -h          Show this help message")
+    print()
+    print("How it works:")
+    print("  - Default config (.checkignore.default.json) is ALWAYS loaded")
+    print("    → Contains: ignored_extensions, ignored_folders (committed)")
+    print("  - Custom config (via --config) is optional")
+    print("    → Contains: skip_repos only (personal, not committed)")
+    print()
+    print("Examples:")
+    print("  python check.py")
+    print("  python check.py /path/to/check")
+    print("  python check.py --config .skip_repos.json")
 
 
 def main() -> None:
-    if len(sys.argv) == 1:
-        base = os.getcwd()
-        print(f"🔎 Scanning current directory: {base}")
-        process_path(base)
-    else:
-        target = os.path.abspath(sys.argv[1])
-        if not os.path.exists(target):
-            print(f"❌ ERROR: Path does not exist: {target}", file=sys.stderr)
-            return
-        if not os.access(target, os.R_OK | os.X_OK):
-            print(f"❌ ERROR: Path is not accessible: {target}", file=sys.stderr)
-            return
-        print(f"🔎 Scanning path: {target}")
-        process_path(target)
+    custom_config = None
+    scan_path = None
 
+    # Parse arguments
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        if args[i] in ("--help", "-h"):
+            print_usage()
+            sys.exit(0)
+        elif args[i] == "--config":
+            if i + 1 >= len(args):
+                print("❌ --config requires a config file path", file=sys.stderr)
+                print_usage()
+                sys.exit(1)
+            custom_config = args[i + 1]
+            i += 2
+        elif args[i].startswith("--"):
+            print(f"❌ Unknown option: {args[i]}", file=sys.stderr)
+            print_usage()
+            sys.exit(1)
+        else:
+            # Positional argument = scan path
+            if scan_path is not None:
+                print("❌ Multiple scan paths provided", file=sys.stderr)
+                print_usage()
+                sys.exit(1)
+            scan_path = args[i]
+            i += 1
+
+    # Load config
+    config = load_config(custom_config)
+
+    # Determine scan path
+    if scan_path is None:
+        scan_path = os.getcwd()
+    else:
+        scan_path = os.path.abspath(scan_path)
+
+    print(f"🔎 Scanning: {scan_path}")
+    process_path(scan_path, config)
     print("\n✅ Done.")
 
 
