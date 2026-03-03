@@ -165,9 +165,9 @@ def check_trailing_whitespace(repo_path: str, config: dict) -> None:
                     stripped = line.rstrip("\n\r")
                     if stripped and stripped != stripped.rstrip():
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
-        except (OSError, IOError):
-            # Silently skip files we can't read
-            pass
+        except (OSError, IOError) as e:
+            # Report unreadable files but continue with other checks.
+            print(f"⚠️ Skipping unreadable file due to error: {full_path} ({e})", file=sys.stderr)
 
 
 def check_repo(repo_path: str, config: dict) -> None:
