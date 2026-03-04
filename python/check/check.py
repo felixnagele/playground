@@ -134,7 +134,8 @@ def check_eol(repo_path: str, config: dict) -> None:
         if should_ignore_file(filepath, config):
             continue
 
-        # i/none = empty file or binary (no line endings) -> OK, not a problem
+        # i/none = no line endings detected (e.g. empty files, single-line files
+        # without a final newline, or sometimes binary files) -> treated as OK here
         # i/lf = correct line endings -> OK
         # i/crlf or i/mixed = problem -> Report
         if index_eol == "i/none" or index_eol == "i/lf":
