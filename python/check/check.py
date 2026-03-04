@@ -128,15 +128,21 @@ def check_eol(repo_path: str, config: dict) -> None:
         if len(parts) < 4:
             continue
 
-        index_eol = parts[0]  # i/lf or i/crlf
+        index_eol = parts[0]  # i/lf, i/crlf, i/mixed, i/none
         filepath = " ".join(parts[3:])
 
         if should_ignore_file(filepath, config):
             continue
 
-        # Check for non-LF line endings
-        if not index_eol.startswith("i/lf"):
-            issues.append(f"  {filepath}: {index_eol}")
+        # i/none = no line endings detected (e.g. empty files, single-line files
+        # without a final newline, or sometimes binary files) -> treated as OK here
+        # i/lf = correct line endings -> OK
+        # i/crlf or i/mixed = problem -> Report
+        if index_eol == "i/none" or index_eol == "i/lf":
+            continue
+
+        # Only report actual problems (CRLF or mixed line endings)
+        issues.append(f"  {filepath}: {index_eol}")
 
     if issues:
         print(f"\n❌ EOL PROBLEMS in {repo_path}:")
@@ -147,6 +153,7 @@ def check_eol(repo_path: str, config: dict) -> None:
 def check_trailing_whitespace(repo_path: str, config: dict) -> None:
     """Check for trailing whitespace in files."""
     committed_files = get_committed_files(repo_path)
+    max_file_size = 10 * 1024 * 1024  # 10 MB
 
     for rel_path in committed_files:
         # Skip markdown files (trailing spaces have meaning)
@@ -158,16 +165,29 @@ def check_trailing_whitespace(repo_path: str, config: dict) -> None:
 
         full_path = os.path.join(repo_path, rel_path)
 
+        # Check if file exists and is accessible
+        if not os.path.exists(full_path):
+            continue
+
         try:
+            # Skip large files (likely binary or generated)
+            file_size = os.path.getsize(full_path)
+            if file_size == 0:
+                # Empty files are fine, no whitespace possible
+                continue
+            if file_size > max_file_size:
+                # Skip large files silently
+                continue
+
             with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
                 for i, line in enumerate(f, start=1):
-                    # Check if line has trailing whitespace
+                    # Check if line has trailing whitespace (excluding newlines)
                     stripped = line.rstrip("\n\r")
                     if stripped and stripped != stripped.rstrip():
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
-        except (OSError, IOError) as e:
-            # Report unreadable files but continue with other checks.
-            print(f"⚠️ Skipping unreadable file due to error: {full_path} ({e})", file=sys.stderr)
+        except (OSError, IOError, UnicodeDecodeError) as e:
+            # Warn about files that could not be read so skipped files are visible.
+            print(f"⚠️  Skipping unreadable file in trailing whitespace check: {full_path} ({e})", file=sys.stderr)
 
 
 def check_repo(repo_path: str, config: dict) -> None:
