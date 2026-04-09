@@ -67,7 +67,7 @@
     "@vitest/eslint-plugin": "^1.6.6",
     "@vitest/ui": "^4.0.18",
     "copyfiles": "^2.4.1",
-    "electron": "^40.0.0",
+    "electron": "^40.8.5",
     "electron-builder": "^26.4.0",
     "esbuild": "^0.27.3",
     "eslint": "^9.39.2",
