@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# TypeScript Build Output
+dist/
+*.tsbuildinfo
+
+# Test Coverage & Logs
+coverage/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE Settings
+.vscode/
+.idea/
