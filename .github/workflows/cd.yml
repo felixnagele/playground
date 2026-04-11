@@ -32,7 +32,8 @@ jobs:
         run: |
           VERSION="${{ github.event.workflow_run.head_sha || github.sha }}"
           VERSION="${VERSION:0:12}"
-          BUNDLE="playground-${VERSION}.tar.gz"
+          BUNDLE_DIR="$(mktemp -d)"
+          BUNDLE="$BUNDLE_DIR/playground-${VERSION}.tar.gz"
 
           tar \
             --exclude='.git' \
