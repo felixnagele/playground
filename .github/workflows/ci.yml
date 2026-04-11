@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-tests:
+    name: Python (${{ matrix.project }})
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [backup, check, github_stats, paint2d, sync]
+    uses: ./.github/workflows/template-python.yml
+    with:
+      project_path: python/${{ matrix.project }}
+
+  typescript-tests:
+    name: TypeScript (${{ matrix.project }})
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [cache, password_checker]
+    uses: ./.github/workflows/template-typescript.yml
+    with:
+      project_path: typescript/${{ matrix.project }}

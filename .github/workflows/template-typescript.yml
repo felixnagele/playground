@@ -1,0 +1,37 @@
+name: CI TypeScript Template
+
+on:
+  workflow_call:
+    inputs:
+      project_path:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  run-test:
+    name: Test (${{ inputs.project_path }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_path }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Run tests
+        working-directory: ${{ inputs.project_path }}
+        env:
+          CI: true
+        run: npm test
