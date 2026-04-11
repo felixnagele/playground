@@ -46,7 +46,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Upload release bundle
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: release-bundle-${{ github.event.workflow_run.head_sha || github.sha }}
           path: |
