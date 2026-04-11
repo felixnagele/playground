@@ -1,0 +1,43 @@
+name: CI Python Template
+
+on:
+  workflow_call:
+    inputs:
+      project_path:
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  run-test:
+    name: Test (${{ inputs.project_path }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-timeout
+          if [ -f "${{ inputs.project_path }}/requirements.txt" ]; then
+            python -m pip install -r "${{ inputs.project_path }}/requirements.txt"
+          fi
+
+      - name: Run tests
+        env:
+          CI: true
+        run: pytest "${{ inputs.project_path }}/tests" -q

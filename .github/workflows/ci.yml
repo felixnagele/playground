@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  discover-projects:
+    name: Discover Projects
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      python_projects: ${{ steps.discover.outputs.python_projects }}
+      typescript_projects: ${{ steps.discover.outputs.typescript_projects }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Discover matrices
+        id: discover
+        run: python .github/scripts/discover_projects.py
+
+  python-tests:
+    name: Python (${{ matrix.project }})
+    needs: discover-projects
+    if: ${{ (needs.discover-projects.outputs.python_projects || '[]') != '[]' }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.discover-projects.outputs.python_projects || '[]') }}
+    uses: ./.github/workflows/template-python.yml
+    with:
+      project_path: python/${{ matrix.project }}
+
+  typescript-tests:
+    name: TypeScript (${{ matrix.project }})
+    needs: discover-projects
+    if: ${{ (needs.discover-projects.outputs.typescript_projects || '[]') != '[]' }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.discover-projects.outputs.typescript_projects || '[]') }}
+    uses: ./.github/workflows/template-typescript.yml
+    with:
+      project_path: typescript/${{ matrix.project }}
+
+  ci-success:
+    needs: [discover-projects, python-tests, typescript-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    permissions: {}
+    steps:
+      - name: Gateway Logic
+        run: |
+          RESULTS='${{ toJson(needs.*.result) }}'
+          echo "Job results to check: $RESULTS"
+
+          if echo "$RESULTS" | grep -qE 'failure|cancelled'; then
+            echo "Critical failure or cancellation detected in jobs."
+            exit 1
+          fi
+
+          if [ "$RESULTS" = "[]" ] || [ -z "$RESULTS" ]; then
+            echo "No job results found. Check your configuration."
+            exit 1
+          fi
+
+          echo "All mandatory checks passed or were safely skipped."
