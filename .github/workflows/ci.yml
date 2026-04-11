@@ -5,14 +5,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   python-tests:
@@ -34,3 +35,26 @@ jobs:
     uses: ./.github/workflows/template-typescript.yml
     with:
       project_path: typescript/${{ matrix.project }}
+
+  ci-success:
+    needs: [python-tests, typescript-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    permissions: {}
+    steps:
+      - name: Gateway Logic
+        run: |
+          RESULTS='${{ toJson(needs.*.result) }}'
+          echo "Job results to check: $RESULTS"
+
+          if echo "$RESULTS" | grep -qE 'failure|cancelled'; then
+            echo "Critical failure or cancellation detected in jobs."
+            exit 1
+          fi
+
+          if [ "$RESULTS" = "[]" ] || [ -z "$RESULTS" ]; then
+            echo "No job results found. Check your configuration."
+            exit 1
+          fi
+
+          echo "All mandatory checks passed or were safely skipped."
