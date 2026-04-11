@@ -18,6 +18,8 @@ concurrency:
 jobs:
   python-tests:
     name: Python (${{ matrix.project }})
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +30,8 @@ jobs:
 
   typescript-tests:
     name: TypeScript (${{ matrix.project }})
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
