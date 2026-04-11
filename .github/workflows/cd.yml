@@ -1,0 +1,78 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Package Release Artifact
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') }}
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Build release bundle
+        id: package
+        run: |
+          VERSION="${{ github.event.workflow_run.head_sha || github.sha }}"
+          VERSION="${VERSION:0:12}"
+          BUNDLE="playground-${VERSION}.tar.gz"
+
+          tar \
+            --exclude='.git' \
+            --exclude='.github/workflows' \
+            -czf "$BUNDLE" .
+
+          sha256sum "$BUNDLE" > "$BUNDLE.sha256"
+          {
+            echo "bundle=$BUNDLE"
+            echo "sha256_file=$BUNDLE.sha256"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload release bundle
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        with:
+          name: release-bundle-${{ github.event.workflow_run.head_sha || github.sha }}
+          path: |
+            ${{ steps.package.outputs.bundle }}
+            ${{ steps.package.outputs.sha256_file }}
+          retention-days: 30
+
+  cd-success:
+    needs: [deploy]
+    if: ${{ always() && needs.deploy.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Gateway Logic
+        run: |
+          RESULTS='${{ toJson(needs.*.result) }}'
+          echo "Job results to check: $RESULTS"
+
+          if echo "$RESULTS" | grep -qE 'failure|cancelled'; then
+            echo "Critical failure or cancellation detected in jobs."
+            exit 1
+          fi
+
+          if [ "$RESULTS" = "[]" ] || [ -z "$RESULTS" ]; then
+            echo "No job results found. Check your configuration."
+            exit 1
+          fi
+
+          echo "All mandatory checks passed or were safely skipped."
