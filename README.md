@@ -40,15 +40,21 @@ Check out each folder, module, or example in the project for more details and us
 
 Run tests locally:
 
-<!--
+For python projects:
+
 ```bash
-<test_command>
+pytest
 ```
--->
 
-_No tests are currently configured in this repository._
+For typescript projects:
 
-Tests also run automatically in CI/pipeline (if configured).
+```bash
+npm test
+```
+
+Tests run automatically in CI 🧪
+
+After a successful CI run, CD 📦 publishes the artifact as a SHA‑tagged tarball.
 
 ## Contributing, License & Support
 
