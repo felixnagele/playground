@@ -16,32 +16,56 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  discover-projects:
+    name: Discover Projects
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      python_projects: ${{ steps.discover.outputs.python_projects }}
+      typescript_projects: ${{ steps.discover.outputs.typescript_projects }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Discover matrices
+        id: discover
+        run: python .github/scripts/discover_projects.py
+
   python-tests:
     name: Python (${{ matrix.project }})
+    needs: discover-projects
+    if: ${{ needs.discover-projects.outputs.python_projects != '[]' }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        project: [backup, check, github_stats, paint2d, sync]
+        project: ${{ fromJson(needs.discover-projects.outputs.python_projects) }}
     uses: ./.github/workflows/template-python.yml
     with:
       project_path: python/${{ matrix.project }}
 
   typescript-tests:
     name: TypeScript (${{ matrix.project }})
+    needs: discover-projects
+    if: ${{ needs.discover-projects.outputs.typescript_projects != '[]' }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        project: [cache, password_checker]
+        project: ${{ fromJson(needs.discover-projects.outputs.typescript_projects) }}
     uses: ./.github/workflows/template-typescript.yml
     with:
       project_path: typescript/${{ matrix.project }}
 
   ci-success:
-    needs: [python-tests, typescript-tests]
+    needs: [discover-projects, python-tests, typescript-tests]
     runs-on: ubuntu-latest
     if: always()
     permissions: {}
