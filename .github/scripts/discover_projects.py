@@ -71,7 +71,7 @@ def write_github_output(name: str, value: list[str]) -> None:
         return
 
     with Path(output_path).open("a", encoding="utf-8") as output_file:
-        output_file.write(f"{name}={json.dumps(value)}\\n")
+        output_file.write(f"{name}={json.dumps(value)}\n")
 
 
 def main() -> int:

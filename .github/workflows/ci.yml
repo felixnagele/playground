@@ -39,13 +39,13 @@ jobs:
   python-tests:
     name: Python (${{ matrix.project }})
     needs: discover-projects
-    if: ${{ needs.discover-projects.outputs.python_projects != '[]' }}
+    if: ${{ (needs.discover-projects.outputs.python_projects || '[]') != '[]' }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.discover-projects.outputs.python_projects) }}
+        project: ${{ fromJson(needs.discover-projects.outputs.python_projects || '[]') }}
     uses: ./.github/workflows/template-python.yml
     with:
       project_path: python/${{ matrix.project }}
@@ -53,13 +53,13 @@ jobs:
   typescript-tests:
     name: TypeScript (${{ matrix.project }})
     needs: discover-projects
-    if: ${{ needs.discover-projects.outputs.typescript_projects != '[]' }}
+    if: ${{ (needs.discover-projects.outputs.typescript_projects || '[]') != '[]' }}
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.discover-projects.outputs.typescript_projects) }}
+        project: ${{ fromJson(needs.discover-projects.outputs.typescript_projects || '[]') }}
     uses: ./.github/workflows/template-typescript.yml
     with:
       project_path: typescript/${{ matrix.project }}
