@@ -25,13 +25,7 @@ Install [uv](https://github.com/astral-sh/uv) with standalone installers or your
 
 `uv sync`
 
-Or use standard python venv and pip:
-
-`python -m venv .venv`
-
-`source .venv/bin/activate` (Linux/Mac) or `.venv\Scripts\activate` (Windows)
-
-`pip install .`
+Or use standard python venv and pip.
 
 ### How to run
 
