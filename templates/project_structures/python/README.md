@@ -20,19 +20,26 @@ project root/
 ## Setup
 
 `cd project_folder`
-`pip install uv`
-`uv venv`
-Linux/Mac
-`source .venv/bin/activate`
-Win
-`.venv\Scripts\activate`
+
+Install [uv](https://github.com/astral-sh/uv) with standalone installers or your package manager of choice.
+
 `uv sync`
 
+Or use standard python venv and pip.
+
 ### How to run
+
+`uv run python -m src.main`
+
+Or with standard python:
 
 `python -m src.main`
 
 ### How to test
+
+`uv run pytest`
+
+Or with standard python:
 
 `pytest`
 
