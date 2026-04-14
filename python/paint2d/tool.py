@@ -1,10 +1,12 @@
-from tool_clear import Clear
-from tool_fill import Fill
-from tool_pencil import Pencil
-from tool_pen import Pen
-from tool_eraser import Eraser
-from tool_rectangle import Rectangle
-from tool_circle import Circle
+from typing import Any
+
+from .tool_circle import Circle
+from .tool_clear import Clear
+from .tool_eraser import Eraser
+from .tool_fill import Fill
+from .tool_pen import Pen
+from .tool_pencil import Pencil
+from .tool_rectangle import Rectangle
 
 
 class Tool:
@@ -29,17 +31,17 @@ class Tool:
         (f"{tool_image_hover_path_pre}rectangle.png"),
         (f"{tool_image_hover_path_pre}circle.png"),
     ]
-    tool_states = dict.fromkeys(tool_item_list, False)
-    tool_object_dict = {}
+    tool_states: dict[str, bool] = dict.fromkeys(tool_item_list, False)
+    tool_object_dict: dict[str, Any] = {}
 
     # Tools
-    clear = None
-    fill = None
-    pencil = None
-    pen = None
-    eraser = None
-    rectangle = None
-    circle = None
+    clear: Clear
+    fill: Fill
+    pencil: Pencil
+    pen: Pen
+    eraser: Eraser
+    rectangle: Rectangle
+    circle: Circle
 
     def __init__(self) -> None:
         # ! Create the tools:
@@ -64,7 +66,7 @@ class Tool:
     def __str__(self) -> str:
         return f"Tool: {self.tool_object_dict}"
 
-    def set_tool_state(self, tool: str, current_layer: int):
+    def set_tool_state(self, tool: str, current_layer: int) -> int:
         if tool in self.tool_item_list:
             print(f"Tool: {tool}")
             # Set the selected tool to True and all other tools to False
@@ -81,40 +83,41 @@ class Tool:
                         obj.clear()
             print(f"Tool states: {self.tool_states}")
             return current_layer
+        return current_layer
 
     def is_tool_state(self, tool: str) -> bool:
         return self.tool_states[tool]
 
     # Getters
-    def get_tool_object_dict(self) -> dict:
+    def get_tool_object_dict(self) -> dict[str, Any]:
         return self.tool_object_dict
 
-    def get_tool_item_list(self) -> list:
+    def get_tool_item_list(self) -> list[str]:
         return self.tool_item_list
 
-    def get_tool_image_list(self) -> list:
+    def get_tool_image_list(self) -> list[str]:
         return self.tool_image_list
 
-    def get_tool_image_hover_list(self) -> list:
+    def get_tool_image_hover_list(self) -> list[str]:
         return self.tool_image_hover_list
 
-    def get_clear(self):
+    def get_clear(self) -> Clear:
         return self.clear
 
-    def get_fill(self):
+    def get_fill(self) -> Fill:
         return self.fill
 
-    def get_pencil(self):
+    def get_pencil(self) -> Pencil:
         return self.pencil
 
-    def get_pen(self):
+    def get_pen(self) -> Pen:
         return self.pen
 
-    def get_eraser(self):
+    def get_eraser(self) -> Eraser:
         return self.eraser
 
-    def get_rectangle(self):
+    def get_rectangle(self) -> Rectangle:
         return self.rectangle
 
-    def get_circle(self):
+    def get_circle(self) -> Circle:
         return self.circle

@@ -1,33 +1,37 @@
 # Tools Menu
+
+from typing import Any
+
 import pygame
-from tool import Tool
+
+from .tool import Tool
 
 
 class ToolsMenu:
-    window_width = None
-    window_height = None
-    main_surface = None
-    paint_surface = None
+    window_width: int
+    window_height: int
+    main_surface: pygame.Surface
+    paint_surface: pygame.Surface
     obj_width = 32
     obj_height = 32
     obj_gap = 50
     offset_x = 125
     offset_y = 20
     border = 1
-    tool_item_list = []
-    tool_image_list = []
-    tool_image_hover_list = []
+    tool_item_list: list[str] = []
+    tool_image_list: list[str] = []
+    tool_image_hover_list: list[str] = []
     tool_item_width = 32
     tool_item_height = 32
     tool_item_gap = 64
-    tool_item_x = []
-    tool_item_y = []
-    tool_item_active = None
-    tool_item_selected = None
-    tool_item_hover = None
-    size_field_location_list = []
-    color_field_location_list = []
-    selected_tool_location_list = []
+    tool_item_x: list[int] = []
+    tool_item_y: list[int] = []
+    tool_item_active: dict[str, bool]
+    tool_item_selected: dict[str, bool]
+    tool_item_hover: dict[str, bool]
+    size_field_location_list: list[int] = []
+    color_field_location_list: list[int] = []
+    selected_tool_location_list: list[int] = []
     size_field_width = 35
     size_field_height = 35
     color_field_width = 90
@@ -44,6 +48,11 @@ class ToolsMenu:
         self.window_height = window_height
         self.main_surface = main_surface
         self.paint_surface = paint_surface
+        self.tool_item_x = []
+        self.tool_item_y = []
+        self.size_field_location_list = []
+        self.color_field_location_list = []
+        self.selected_tool_location_list = []
         tool = Tool()
         self.tool_item_list = tool.get_tool_item_list()
         self.tool_image_list = tool.get_tool_image_list()
@@ -62,18 +71,28 @@ class ToolsMenu:
     def __str__(self) -> str:
         return f"ToolsMenu: window_width={self.window_width}, window_height={self.window_height}"
 
-    def update_window(self, window_width, window_height, main_surface, paint_surface):
+    def update_window(
+        self,
+        window_width: int,
+        window_height: int,
+        main_surface: pygame.Surface,
+        paint_surface: pygame.Surface,
+    ) -> None:
         self.window_width = window_width
         self.window_height = window_height
         self.main_surface = main_surface
         self.paint_surface = paint_surface
         self.calculate_tool_coordinates()
 
-    def update(self, main_surface, paint_surface):
+    def update(
+        self, main_surface: pygame.Surface, paint_surface: pygame.Surface
+    ) -> None:
         self.main_surface = main_surface
         self.paint_surface = paint_surface
 
-    def calculate_tool_coordinates(self):
+    def calculate_tool_coordinates(self) -> None:
+        self.tool_item_x = []
+        self.tool_item_y = []
         for i in range(len(self.tool_item_list)):
             self.tool_item_x.insert(
                 i, self.window_width - self.tool_item_width - self.tool_item_gap
@@ -86,7 +105,7 @@ class ToolsMenu:
             )
 
     # Draw the tool items from the tools_item_list and use the images of the tools_image_list
-    def draw(self, pygame: pygame):
+    def draw(self, pygame: Any) -> None:
         for i in range(len(self.tool_item_list)):
             image = pygame.image.load(self.tool_image_list[i])
             image = pygame.transform.scale(
@@ -94,7 +113,7 @@ class ToolsMenu:
             )
             self.main_surface.blit(image, (self.tool_item_x[i], self.tool_item_y[i]))
 
-    def draw_selected_tool(self, pygame: pygame):
+    def draw_selected_tool(self, pygame: Any) -> None:
         for i in range(len(self.tool_item_list)):
             if self.tool_item_selected[self.tool_item_list[i]]:
                 image = pygame.image.load(self.tool_image_hover_list[i])
@@ -109,7 +128,7 @@ class ToolsMenu:
                     ),
                 )
 
-    def draw_hover_tool(self, pygame: pygame):
+    def draw_hover_tool(self, pygame: Any) -> None:
         for i in range(len(self.tool_item_list)):
             if self.tool_item_hover[self.tool_item_list[i]]:
                 # pygame.draw.rect(self.main_surface, (255,0,0), (300, 300, 50, 50))
@@ -121,7 +140,7 @@ class ToolsMenu:
                     image, (self.tool_item_x[i], self.tool_item_y[i])
                 )
 
-    def draw_size_color_fields(self, pygame: pygame):
+    def draw_size_color_fields(self, pygame: Any) -> None:
         gap_text_y = 7
         gap_text_x = 5
         pygame.draw.rect(
@@ -152,7 +171,7 @@ class ToolsMenu:
         )
 
     # Collision detection for the tool items
-    def collision(self, mouse_x: int, mouse_y: int):
+    def collision(self, mouse_x: int, mouse_y: int) -> None:
         for i in range(len(self.tool_item_list)):
             if (
                 mouse_x >= self.tool_item_x[i]
@@ -194,7 +213,7 @@ class ToolsMenu:
             return True
         return False
 
-    def hover_tool(self, mouse_x: int, mouse_y: int):
+    def hover_tool(self, mouse_x: int, mouse_y: int) -> None:
         for i in range(len(self.tool_item_list)):
             if (
                 mouse_x >= self.tool_item_x[i]
@@ -215,54 +234,45 @@ class ToolsMenu:
                 self.tool_item_hover[self.tool_item_list[i]] = False
 
     # Calculate Coordinates for size input field
-    def get_size_field_location(self):
+    def get_size_field_location(self) -> list[int]:
         position = len(self.tool_item_list) + 1
         field_gap = 75
-        self.size_field_location_list.insert(
-            0, self.window_width - self.tool_item_width - self.tool_item_gap - field_gap
-        )
-        self.size_field_location_list.insert(
-            1,
+        self.size_field_location_list = [
+            self.window_width - self.tool_item_width - self.tool_item_gap - field_gap,
             self.window_height - self.tool_item_height - self.tool_item_gap * position,
-        )
+        ]
         return self.size_field_location_list
 
     # Calculate Coordinates for color input field
-    def get_color_field_location(self):
+    def get_color_field_location(self) -> list[int]:
         position = len(self.tool_item_list) + 1
         field_gap = 30
-        self.color_field_location_list.insert(
-            0, self.window_width - self.tool_item_width - self.tool_item_gap - field_gap
-        )
-        self.color_field_location_list.insert(
-            1,
+        self.color_field_location_list = [
+            self.window_width - self.tool_item_width - self.tool_item_gap - field_gap,
             self.window_height - self.tool_item_height - self.tool_item_gap * position,
-        )
+        ]
         return self.color_field_location_list
 
-    def get_selected_tool_location(self):
+    def get_selected_tool_location(self) -> list[int]:
         position = len(self.tool_item_list) + 2
-        self.selected_tool_location_list.insert(
-            0, self.window_width - self.tool_item_width - self.tool_item_gap
-        )
-        self.selected_tool_location_list.insert(
-            1,
+        self.selected_tool_location_list = [
+            self.window_width - self.tool_item_width - self.tool_item_gap,
             self.window_height - self.tool_item_height - self.tool_item_gap * position,
-        )
+        ]
         return self.selected_tool_location_list
 
     # Getters
-    def get_offset_x(self):
+    def get_offset_x(self) -> int:
         return self.offset_x
 
-    def get_offset_y(self):
+    def get_offset_y(self) -> int:
         return self.offset_y
 
-    def get_tool_item_active(self):
+    def get_tool_item_active(self) -> dict[str, bool]:
         return self.tool_item_active
 
-    def get_tool_item_list(self):
+    def get_tool_item_list(self) -> list[str]:
         return self.tool_item_list
 
-    def get_tool_image_list(self):
+    def get_tool_image_list(self) -> list[str]:
         return self.tool_image_list

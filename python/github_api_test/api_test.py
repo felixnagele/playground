@@ -1,7 +1,7 @@
 import requests
 
 
-def main():
+def main() -> None:
     """
     Fetch and display GitHub API root endpoints.
     """

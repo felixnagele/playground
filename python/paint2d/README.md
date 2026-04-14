@@ -36,16 +36,8 @@ Project inspired by the professional and free paint program: [PAINT.NET](https:/
 
 ## Dependencies
 
-How to install pygame?
-
 ```bash
-pip install pygame
-```
-
-How to install pytest?
-
-```bash
-pip install pytest
+pip install -r requirements.txt
 ```
 
 ## Usage

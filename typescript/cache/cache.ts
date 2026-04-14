@@ -1,14 +1,14 @@
 interface CacheEntry {
-  value: any;
+  value: unknown;
   expiresAt: number;
 }
 
 export class SimpleCache {
-  private data: Record<string, CacheEntry> = {};
+  private data: Partial<Record<string, CacheEntry>> = {};
 
   constructor(private defaultTtl: number = 5000) {}
 
-  set(key: string, value: any, customTtl?: number): void {
+  set<T>(key: string, value: T, customTtl?: number): void {
     const ttl = customTtl ?? this.defaultTtl;
     this.data[key] = {
       value,
@@ -16,7 +16,7 @@ export class SimpleCache {
     };
   }
 
-  get(key: string): any {
+  get<T>(key: string): T | null {
     const entry = this.data[key];
     if (!entry) return null;
 
@@ -24,6 +24,6 @@ export class SimpleCache {
       delete this.data[key];
       return null;
     }
-    return entry.value;
+    return entry.value as T;
   }
 }
