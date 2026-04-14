@@ -14,7 +14,9 @@ def fetch_public_repos(username: str, timeout: int = 10) -> List[str]:
     while url:
         try:
             resp = requests.get(
-                url, params={"per_page": 100, "type": "public"}, timeout=timeout
+                url,
+                params={"per_page": "100", "type": "public"},
+                timeout=timeout,
             )
             resp.raise_for_status()
         except requests.exceptions.Timeout:

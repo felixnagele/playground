@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import check
+from pytest import MonkeyPatch
 
 
-def test_should_ignore_file_case_insensitive():
+def test_should_ignore_file_case_insensitive() -> None:
     config = {"ignored_extensions": [".png", ".JPG"]}
 
     assert check.should_ignore_file("image.PNG", config)
@@ -9,7 +12,7 @@ def test_should_ignore_file_case_insensitive():
     assert not check.should_ignore_file("notes.txt", config)
 
 
-def test_should_skip_repo_by_name_and_absolute_path(tmp_path):
+def test_should_skip_repo_by_name_and_absolute_path(tmp_path: Path) -> None:
     repo_dir = tmp_path / "my_repo"
     repo_dir.mkdir()
 
@@ -20,7 +23,7 @@ def test_should_skip_repo_by_name_and_absolute_path(tmp_path):
     assert check.should_skip_repo(str(repo_dir), by_path_config)
 
 
-def test_find_repos_respects_ignored_folders(tmp_path):
+def test_find_repos_respects_ignored_folders(tmp_path: Path) -> None:
     repo_ok = tmp_path / "repo_ok"
     (repo_ok / ".git").mkdir(parents=True)
 
@@ -34,7 +37,7 @@ def test_find_repos_respects_ignored_folders(tmp_path):
     assert str(ignored_repo) not in repos
 
 
-def test_get_committed_files_splits_output(monkeypatch):
+def test_get_committed_files_splits_output(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(check, "run_cmd", lambda cmd, cwd: "a.py\nb.py")
 
     files = check.get_committed_files("dummy")

@@ -4,7 +4,7 @@ import subprocess
 from typing import Tuple
 
 
-def run_git(args, repo_path: str, timeout: int) -> Tuple[int, str, str]:
+def run_git(args: list[str], repo_path: str, timeout: int) -> Tuple[int, str, str]:
     result = subprocess.run(
         ["git", "-C", repo_path] + args, text=True, capture_output=True, timeout=timeout
     )

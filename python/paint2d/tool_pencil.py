@@ -1,28 +1,31 @@
 # Pencil
+
+from typing import Any
+
 import pygame
 
 
 class Pencil:
     name = "pencil"
     state = False
-    data_x = []
-    data_y = []
+    data_x: list[int] = []
+    data_y: list[int] = []
     size = 1
     color = (0, 0, 0)
 
     # Constructor
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     # String representation
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Pencil: {self.state} Data(x, y):= {self.data_x}, {self.data_y}"
 
-    def set_state(self, state: bool):
+    def set_state(self, state: bool) -> None:
         self.state = state
 
     # Draw pencil data
-    def draw(self, pygame: pygame, surface: pygame.Surface):
+    def draw(self, pygame: Any, surface: pygame.Surface) -> None:
         for i in range(len(self.data_x)):
             pygame.draw.rect(
                 surface,
@@ -32,8 +35,12 @@ class Pencil:
 
     # Append pencil data
     def append(
-        self, mouse_x: int, mouse_y: int, drawn_history: dict, current_layer: int
-    ):
+        self,
+        mouse_x: int,
+        mouse_y: int,
+        drawn_history: dict[int, tuple[object, str]],
+        current_layer: int,
+    ) -> None:
         if self.state:
             self.data_x.append(mouse_x)
             self.data_y.append(mouse_y)
@@ -43,6 +50,6 @@ class Pencil:
             )
 
     # Clear pencil data
-    def clear(self):
+    def clear(self) -> None:
         self.data_x[:] = []
         self.data_y[:] = []

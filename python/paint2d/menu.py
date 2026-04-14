@@ -1,18 +1,21 @@
 # Menu
+
+from typing import Any
+
 import pygame
 
 
 class Menu:
-    main_surface = None
-    paint_surface = None
+    main_surface: pygame.Surface
+    paint_surface: pygame.Surface
     menu_item_list = ["Import", "Export", "Dimension", "X", "Y", "MX", "MY"]
     width = 120
     height = 40
     menu_item_x_start = 20
     menu_item_y_start = 20
     menu_item_gap = 20
-    menu_item_x = []
-    menu_item_y = []
+    menu_item_x: list[int] = []
+    menu_item_y: list[int] = []
     menu_color_status = [(52, 152, 219), (240, 240, 240)]  # default, #textfield
     menu_color_pointer = 0
     menu_color_border = (0, 0, 0)
@@ -24,7 +27,7 @@ class Menu:
     )  # Convert list to dict with all values on False
     menu_import_path = "rsc/imports/paint2d_import.png"
     menu_export_path = "rsc/exports/paint2d_export.png"
-    menu_x_y_location_list = []
+    menu_x_y_location_list: list[int] = []
     menu_x_y_font_size = 30
 
     # Constructor
@@ -39,6 +42,9 @@ class Menu:
         self.window_height = window_height
         self.main_surface = main_surface
         self.paint_surface = paint_surface
+        self.menu_item_x = []
+        self.menu_item_y = []
+        self.menu_x_y_location_list = []
         for i in range(len(self.menu_item_list)):
             self.menu_item_x.insert(
                 i, self.menu_item_x_start + self.width * i + self.menu_item_gap * i
@@ -46,11 +52,11 @@ class Menu:
             self.menu_item_y.insert(i, self.menu_item_y_start)
 
     # String representation
-    def __str__(self):
-        return f"ExportMenu: ..."
+    def __str__(self) -> str:
+        return "ExportMenu: ..."
 
     # Draw the import & export item
-    def draw_import_export(self, pygame: pygame):
+    def draw_import_export(self, pygame: Any) -> None:
         self.menu_color_pointer = 0
         for i in range(0, 2):
             pygame.draw.rect(
@@ -68,7 +74,7 @@ class Menu:
             self.main_surface.blit(text, text_rect)
 
     # Draw the dimension item
-    def draw_dimension(self, pygame: pygame):
+    def draw_dimension(self, pygame: Any) -> None:
         # Dimension Item
         index = 2
         self.menu_color_pointer = 0
@@ -110,7 +116,7 @@ class Menu:
             self.main_surface.blit(text, text_rect)
 
     # Draw max x, y
-    def draw_max_x_y(self, pygame: pygame, max_x: str, max_y: str):
+    def draw_max_x_y(self, pygame: Any, max_x: str, max_y: str) -> None:
         self.menu_color_pointer = 1
         for i in range(5, 7):
             pygame.draw.rect(
@@ -154,16 +160,16 @@ class Menu:
         self.main_surface.blit(text_max_y, text_rect_max_y)
 
     # Import Image
-    def import_image(self, pygame: pygame):
+    def import_image(self, pygame: Any) -> pygame.Surface:
         image = pygame.image.load(self.menu_import_path)
         return image
 
     # Export Image
-    def export_image(self, pygame: pygame):
+    def export_image(self, pygame: Any) -> None:
         pygame.image.save(self.paint_surface, self.menu_export_path)
 
     # Collision with menu items
-    def collision(self, mouse_x: int, mouse_y: int):
+    def collision(self, mouse_x: int, mouse_y: int) -> None:
         for i in range(len(self.menu_item_list)):
             if (
                 mouse_x > self.menu_item_x[i]
@@ -177,32 +183,26 @@ class Menu:
                     print(self.menu_item_active)
 
     # Getters
-    def get_menu_item_active(self):
+    def get_menu_item_active(self) -> dict[str, bool]:
         return self.menu_item_active
 
-    def get_menu_item_list(self):
+    def get_menu_item_list(self) -> list[str]:
         return self.menu_item_list
 
-    def get_x_y_font_size(self):
+    def get_x_y_font_size(self) -> int:
         return self.menu_x_y_font_size
 
-    def get_x_y_location_list(self):
-        self.menu_x_y_location_list.insert(
-            0, self.menu_item_x[3] + (30)
-        )  # X Item (X Coordinate)
-        self.menu_x_y_location_list.insert(
-            1, self.menu_item_y[3] + (10)
-        )  # X Item (Y Coordinate)
-        self.menu_x_y_location_list.insert(
-            2, self.menu_item_x[4] + (30)
-        )  # Y Item (X Coordinate)
-        self.menu_x_y_location_list.insert(
-            3, self.menu_item_y[4] + (10)
-        )  # Y Item (Y Coordinate)
+    def get_x_y_location_list(self) -> list[int]:
+        self.menu_x_y_location_list = [
+            self.menu_item_x[3] + 30,
+            self.menu_item_y[3] + 10,
+            self.menu_item_x[4] + 30,
+            self.menu_item_y[4] + 10,
+        ]
         return self.menu_x_y_location_list
 
     def window_update(
         self, main_surface: pygame.Surface, paint_surface: pygame.Surface
-    ):
+    ) -> None:
         self.main_surface = main_surface
         self.paint_surface = paint_surface
