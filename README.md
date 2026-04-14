@@ -34,7 +34,7 @@ Check out each folder, module, or example in the project for more details and us
 
 Tests are configured for specific projects and run automatically in CI 🧪
 
-After a successful CI run, CD 📦 uploads a `playground-<sha>.tar.gz` bundle and its checksum as a workflow artifact, available for download from the run's Artifacts section.
+After a successful CI run, CD 📦 uploads a `playground-<sha>.tar.gz` bundle and its checksum as the `release-bundle-<sha>` workflow artifact, available for download from the run's Artifacts section.
 
 ## Contributing, License & Support
 
