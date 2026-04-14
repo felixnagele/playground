@@ -1,22 +1,29 @@
 # Clear
-from tool_pencil import Pencil
+
+from typing import Any
 
 
 class Clear:
     state = False
 
     # Constructor
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     # String representation
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Clear: {self.state}"
 
-    def set_state(self, state: bool):
+    def set_state(self, state: bool) -> None:
         self.state = state
 
-    def clear_all(self, paint_surface, color, tool, drawn_history: dict):
+    def clear_all(
+        self,
+        paint_surface: Any,
+        color: tuple[int, int, int],
+        tool: Any,
+        drawn_history: dict[int, Any],
+    ) -> bool:
         if self.state:
             # Remove imported image &
             # Remove (clear all) tools

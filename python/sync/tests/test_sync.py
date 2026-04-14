@@ -4,13 +4,13 @@ import sys
 from pathlib import Path
 
 
-def _utf8_env():
+def _utf8_env() -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
     return env
 
 
-def test_sync_script_help_works():
+def test_sync_script_help_works() -> None:
     script = Path(__file__).resolve().parents[1] / "sync.py"
     result = subprocess.run(
         [sys.executable, str(script), "--help"],
@@ -26,7 +26,7 @@ def test_sync_script_help_works():
     assert "Update all git repositories under a directory" in result.stdout
 
 
-def test_sync_script_handles_empty_base_directory(tmp_path):
+def test_sync_script_handles_empty_base_directory(tmp_path: Path) -> None:
     script = Path(__file__).resolve().parents[1] / "sync.py"
     result = subprocess.run(
         [sys.executable, str(script), "--base", str(tmp_path)],

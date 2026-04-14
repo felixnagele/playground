@@ -1,6 +1,7 @@
 import os
 import time
 from collections import Counter, defaultdict
+from typing import Any
 
 import requests
 from dotenv import load_dotenv
@@ -9,7 +10,7 @@ from dotenv import load_dotenv
 BAR_SCALE_FACTOR = 2
 
 
-def load_config():
+def load_config() -> tuple[str, str, set[str], bool]:
     load_dotenv()
     token = os.getenv("TOKEN")
     username = os.getenv("USERNAME")
@@ -25,13 +26,13 @@ def load_config():
 
 
 def get_user_languages(
-    username=None,
-    token=None,
-    include_private=True,
-    exclude_repos=None,
-    only_owned=False,
-):
-    headers = {}
+    username: str | None = None,
+    token: str | None = None,
+    include_private: bool = True,
+    exclude_repos: set[str] | None = None,
+    only_owned: bool = False,
+) -> tuple[Counter[str], dict[str, set[str]]]:
+    headers: dict[str, str] = {}
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
@@ -41,7 +42,7 @@ def get_user_languages(
     else:
         repos_url = f"https://api.github.com/users/{username}/repos"
 
-    repos = []
+    repos: list[dict[str, Any]] = []
     page = 1
     while True:
         resp = requests.get(
@@ -61,8 +62,8 @@ def get_user_languages(
         repos.extend(data)
         page += 1
 
-    language_counter = Counter()
-    language_repos = defaultdict(set)
+    language_counter: Counter[str] = Counter()
+    language_repos: defaultdict[str, set[str]] = defaultdict(set)
 
     for repo in repos:
         repo_name = repo["name"]
@@ -75,7 +76,7 @@ def get_user_languages(
         # Skip repos not owned by the user if ONLY_OWNED is true
         if only_owned:
             owner_login = repo.get("owner", {}).get("login")
-            is_admin = repo.get("permissions", {}).get("admin", False)
+            is_admin = bool(repo.get("permissions", {}).get("admin", False))
             if owner_login is None or username is None:
                 print(f"Skipping repo due to missing owner or username: {repo_name}")
                 continue
@@ -95,7 +96,15 @@ def get_user_languages(
         else:
             time.sleep(0.1)  # Small delay between requests
         if resp.status_code == 200:
-            langs = resp.json()
+            langs_raw = resp.json()
+            if not isinstance(langs_raw, dict):
+                print(f"Skipping {repo_name} due to invalid language payload")
+                continue
+            langs = {
+                str(key): int(value)
+                for key, value in langs_raw.items()
+                if isinstance(value, (int, float))
+            }
             language_counter.update(langs)
             for lang in langs.keys():
                 language_repos[lang].add(repo_name)
@@ -105,17 +114,19 @@ def get_user_languages(
     return language_counter, language_repos
 
 
-def print_language_stats(language_counter, language_repos):
+def print_language_stats(
+    language_counter: Counter[str], language_repos: dict[str, set[str]]
+) -> None:
     total_bytes = sum(language_counter.values())
     if total_bytes == 0:
         print("No language data found.")
         return
 
-    print(f"\n=== Language Usage Across Profile ===")
+    print("\n=== Language Usage Across Profile ===")
     for lang, bytes_of_code in language_counter.most_common():
         percent = (bytes_of_code / total_bytes) * 100
         bar = "█" * int(percent // BAR_SCALE_FACTOR)
-        repos_list = ", ".join(sorted(language_repos[lang]))
+        repos_list = ", ".join(sorted(language_repos.get(lang, set())))
         print(f"{lang:15} {percent:6.2f}% {bar}  | Repos: {repos_list}")
 
 
