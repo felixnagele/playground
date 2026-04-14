@@ -16,8 +16,29 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  ci-config:
+    name: CI Config
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      python_version: ${{ steps.values.outputs.python_version }}
+      node_version: ${{ steps.values.outputs.node_version }}
+      job_timeout_minutes: ${{ steps.values.outputs.job_timeout_minutes }}
+      npm_ci_flags: ${{ steps.values.outputs.npm_ci_flags }}
+      npm_install_flags: ${{ steps.values.outputs.npm_install_flags }}
+    steps:
+      - name: Export shared values
+        id: values
+        run: |
+          echo "python_version=3.14" >> "$GITHUB_OUTPUT"
+          echo "node_version=24" >> "$GITHUB_OUTPUT"
+          echo "job_timeout_minutes=15" >> "$GITHUB_OUTPUT"
+          echo "npm_ci_flags=--no-audit --no-fund" >> "$GITHUB_OUTPUT"
+          echo "npm_install_flags=--no-audit --no-fund" >> "$GITHUB_OUTPUT"
+
   discover-projects:
     name: Discover Projects
+    needs: ci-config
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,7 +51,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: ${{ needs.ci-config.outputs.python_version }}
 
       - name: Discover matrices
         id: discover
@@ -38,7 +59,7 @@ jobs:
 
   python-tests:
     name: Python (${{ matrix.project }})
-    needs: discover-projects
+    needs: [ci-config, discover-projects]
     if: ${{ (needs.discover-projects.outputs.python_projects || '[]') != '[]' }}
     permissions:
       contents: read
@@ -49,10 +70,12 @@ jobs:
     uses: ./.github/workflows/template-python.yml
     with:
       project_path: python/${{ matrix.project }}
+      python_version: ${{ needs.ci-config.outputs.python_version }}
+      job_timeout_minutes: ${{ fromJson(needs.ci-config.outputs.job_timeout_minutes) }}
 
   typescript-tests:
     name: TypeScript (${{ matrix.project }})
-    needs: discover-projects
+    needs: [ci-config, discover-projects]
     if: ${{ (needs.discover-projects.outputs.typescript_projects || '[]') != '[]' }}
     permissions:
       contents: read
@@ -63,9 +86,13 @@ jobs:
     uses: ./.github/workflows/template-typescript.yml
     with:
       project_path: typescript/${{ matrix.project }}
+      node_version: ${{ needs.ci-config.outputs.node_version }}
+      job_timeout_minutes: ${{ fromJson(needs.ci-config.outputs.job_timeout_minutes) }}
+      npm_ci_flags: ${{ needs.ci-config.outputs.npm_ci_flags }}
+      npm_install_flags: ${{ needs.ci-config.outputs.npm_install_flags }}
 
   ci-success:
-    needs: [discover-projects, python-tests, typescript-tests]
+    needs: [ci-config, discover-projects, python-tests, typescript-tests]
     runs-on: ubuntu-latest
     if: always()
     permissions: {}

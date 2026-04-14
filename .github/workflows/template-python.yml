@@ -6,14 +6,25 @@ on:
       project_path:
         required: true
         type: string
+      python_version:
+        required: false
+        type: string
+        default: '3.14'
+      job_timeout_minutes:
+        required: false
+        type: number
+        default: 15
 
 permissions: {}
+
+env:
+  PYTHON_VERSION: ${{ inputs.python_version }}
 
 jobs:
   format:
     name: Format (${{ inputs.project_path }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -25,7 +36,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
 
@@ -44,7 +55,7 @@ jobs:
     name: Lint (${{ inputs.project_path }})
     needs: format
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -56,7 +67,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
 
@@ -75,7 +86,7 @@ jobs:
     name: Typecheck (${{ inputs.project_path }})
     needs: lint
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -87,7 +98,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
 
@@ -106,7 +117,7 @@ jobs:
     name: Tests (${{ inputs.project_path }})
     needs: typecheck
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -118,7 +129,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
 

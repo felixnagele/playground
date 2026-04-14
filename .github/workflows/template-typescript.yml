@@ -6,14 +6,35 @@ on:
       project_path:
         required: true
         type: string
+      node_version:
+        required: false
+        type: string
+        default: '24'
+      job_timeout_minutes:
+        required: false
+        type: number
+        default: 15
+      npm_ci_flags:
+        required: false
+        type: string
+        default: '--no-audit --no-fund'
+      npm_install_flags:
+        required: false
+        type: string
+        default: '--no-audit --no-fund'
 
 permissions: {}
+
+env:
+  NODE_VERSION: ${{ inputs.node_version }}
+  NPM_CI_FLAGS: ${{ inputs.npm_ci_flags }}
+  NPM_INSTALL_FLAGS: ${{ inputs.npm_install_flags }}
 
 jobs:
   format:
     name: Format (${{ inputs.project_path }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -25,17 +46,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
       - name: Install dependencies
         working-directory: ${{ inputs.project_path }}
-        run: npm ci --no-audit --no-fund
+        run: npm ci ${NPM_CI_FLAGS}
 
       - name: Install formatter
         working-directory: ${{ inputs.project_path }}
-        run: npm install --no-save --no-audit --no-fund prettier
+        run: npm install --no-save ${NPM_INSTALL_FLAGS} prettier
 
       - name: Check formatting (Prettier)
         working-directory: ${{ inputs.project_path }}
@@ -45,7 +66,7 @@ jobs:
     name: Lint (${{ inputs.project_path }})
     needs: format
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -57,17 +78,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
       - name: Install dependencies
         working-directory: ${{ inputs.project_path }}
-        run: npm ci --no-audit --no-fund
+        run: npm ci ${NPM_CI_FLAGS}
 
       - name: Install lint tools
         working-directory: ${{ inputs.project_path }}
-        run: npm install --no-save --no-audit --no-fund eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+        run: npm install --no-save ${NPM_INSTALL_FLAGS} eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Run linting (ESLint)
         working-directory: ${{ inputs.project_path }}
@@ -110,7 +131,7 @@ jobs:
     name: Typecheck (${{ inputs.project_path }})
     needs: lint
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -122,13 +143,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
       - name: Install dependencies
         working-directory: ${{ inputs.project_path }}
-        run: npm ci --no-audit --no-fund
+        run: npm ci ${NPM_CI_FLAGS}
 
       - name: Run static type checking (TypeScript)
         working-directory: ${{ inputs.project_path }}
@@ -138,7 +159,7 @@ jobs:
     name: Tests (${{ inputs.project_path }})
     needs: typecheck
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -150,13 +171,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
       - name: Install dependencies
         working-directory: ${{ inputs.project_path }}
-        run: npm ci --no-audit --no-fund
+        run: npm ci ${NPM_CI_FLAGS}
 
       - name: Check if tests are configured
         id: has-tests
