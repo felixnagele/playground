@@ -29,31 +29,32 @@ jobs:
 
       - name: Build release bundle
         id: package
+        shell: bash
         run: |
-          VERSION="${{ github.event.workflow_run.head_sha || github.sha }}"
-          VERSION="${VERSION:0:12}"
-          BUNDLE_DIR="$(mktemp -d)"
-          BUNDLE="$BUNDLE_DIR/playground-${VERSION}.tar.gz"
+          FULL_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
 
-          tar \
+          BUNDLE_DIR="${{ runner.temp }}/artifacts"
+          mkdir -p "$BUNDLE_DIR"
+
+          BUNDLE_PATH="$BUNDLE_DIR/playground-${FULL_SHA}.tar.gz"
+
+          tar -czf "$BUNDLE_PATH" \
             --exclude='.git' \
-            --exclude='.github/workflows' \
-            -czf "$BUNDLE" .
+            --exclude='.github' \
+            .
 
-          sha256sum "$BUNDLE" > "$BUNDLE.sha256"
-          {
-            echo "bundle=$BUNDLE"
-            echo "sha256_file=$BUNDLE.sha256"
-          } >> "$GITHUB_OUTPUT"
+          cd "$BUNDLE_DIR" && sha256sum "$(basename "$BUNDLE_PATH")" > "playground-${FULL_SHA}.tar.gz.sha256"
+
+          echo "output_dir=$BUNDLE_DIR" >> "$GITHUB_OUTPUT"
+          echo "full_sha=$FULL_SHA" >> "$GITHUB_OUTPUT"
 
       - name: Upload release bundle
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
-          name: release-bundle-${{ github.event.workflow_run.head_sha || github.sha }}
-          path: |
-            ${{ steps.package.outputs.bundle }}
-            ${{ steps.package.outputs.sha256_file }}
-          retention-days: 30
+          name: release-bundle-${{ steps.package.outputs.full_sha }}
+          path: ${{ steps.package.outputs.output_dir }}/*
+          retention-days: 90
+          if-no-files-found: error
 
   cd-success:
     needs: [deploy]
