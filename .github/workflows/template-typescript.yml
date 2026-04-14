@@ -91,41 +91,8 @@ jobs:
         run: npm install --no-save ${NPM_INSTALL_FLAGS} eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Run linting (ESLint)
-        working-directory: ${{ inputs.project_path }}
         shell: bash
-        run: |
-          if [ ! -f "eslint.config.js" ] && [ ! -f "eslint.config.mjs" ] && [ ! -f "eslint.config.cjs" ] && [ ! -f "eslint.config.ts" ]; then
-            cat > .ci-eslint.config.mjs <<'EOF'
-            import tsParser from "@typescript-eslint/parser";
-            import tsPlugin from "@typescript-eslint/eslint-plugin";
-
-            export default [
-              {
-                files: ["**/*.ts", "**/*.tsx"],
-                ignores: ["node_modules/**", "dist/**", "coverage/**"],
-                languageOptions: {
-                  parser: tsParser,
-                  parserOptions: {
-                    project: ["./tsconfig.json"],
-                    tsconfigRootDir: process.cwd(),
-                    sourceType: "module",
-                    ecmaVersion: "latest"
-                  }
-                },
-                plugins: {
-                  "@typescript-eslint": tsPlugin
-                },
-                rules: {
-                  ...tsPlugin.configs.recommended.rules,
-                  ...tsPlugin.configs["recommended-type-checked"].rules
-                }
-              }
-            ];
-            EOF
-            npx eslint --config .ci-eslint.config.mjs .
-          else
-            npx eslint .
-          fi
+        run: bash .github/scripts/run_ts_lint.sh "${{ inputs.project_path }}"
 
   typecheck:
     name: Typecheck (${{ inputs.project_path }})
