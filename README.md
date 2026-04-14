@@ -26,35 +26,15 @@ cd playground
 
 Browse through the folders to find different projects and experiments.
 
-### One-liner setup
-
-```bash
-git clone https://github.com/felixnagele/playground.git && cd playground
-```
-
 ## 📖 Usage
 
 Check out each folder, module, or example in the project for more details and usage.
 
 ## 🧪 Running Tests
 
-Run tests locally:
+Tests are configured for specific projects and run automatically in CI 🧪
 
-For python projects:
-
-```bash
-pytest
-```
-
-For typescript projects:
-
-```bash
-npm test
-```
-
-Tests run automatically in CI 🧪
-
-After a successful CI run, CD 📦 publishes the artifact as a SHA‑tagged tarball.
+After a successful CI run, CD 📦 uploads a `playground-<sha>.tar.gz` bundle and its checksum as the `release-bundle-<sha>` workflow artifact, available for download from the run's Artifacts section.
 
 ## Contributing, License & Support
 
