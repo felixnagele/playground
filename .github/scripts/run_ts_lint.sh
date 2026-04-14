@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_PATH="${1:-}"
-if [ -z "${PROJECT_PATH}" ]; then
-  echo "Usage: bash .github/scripts/run_ts_lint.sh <project_path>"
-  exit 2
-fi
-
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
-PROJECT_DIR="${ROOT_DIR}/${PROJECT_PATH}"
-FALLBACK_CONFIG="${ROOT_DIR}/.github/eslint/default-typescript-eslint.config.mjs"
+FALLBACK_CONFIG="${SCRIPT_DIR}/../eslint/default-typescript-eslint.config.mjs"
 
-if [ ! -d "${PROJECT_DIR}" ]; then
-  echo "Project path not found: ${PROJECT_DIR}"
-  exit 2
-fi
+# shellcheck source=.github/scripts/ts_quality_common.sh
+source "${SCRIPT_DIR}/ts_quality_common.sh"
+
+ts_init_project "${1:-}"
 
 if [ ! -f "${FALLBACK_CONFIG}" ]; then
   echo "Fallback ESLint config missing: ${FALLBACK_CONFIG}"
   exit 2
 fi
 
-cd "${PROJECT_DIR}"
+cd "${TS_PROJECT_DIR}"
+ts_npm_ci
+ts_npm_install_tools eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
 HAS_FLAT_CONFIG=false
 HAS_LEGACY_CONFIG=false
@@ -46,18 +40,18 @@ if grep -q '"eslintConfig"' package.json; then
 fi
 
 if [ "${HAS_FLAT_CONFIG}" = true ]; then
-  echo "Using local flat ESLint config in ${PROJECT_PATH}."
+  echo "Using local flat ESLint config in ${TS_PROJECT_PATH}."
   npx eslint .
   exit 0
 fi
 
 if [ "${HAS_LEGACY_CONFIG}" = true ]; then
-  echo "Using local legacy ESLint config in ${PROJECT_PATH}."
+  echo "Using local legacy ESLint config in ${TS_PROJECT_PATH}."
   ESLINT_USE_FLAT_CONFIG=false npx eslint .
   exit 0
 fi
 
-echo "No local ESLint config found in ${PROJECT_PATH}; using fallback config."
+echo "No local ESLint config found in ${TS_PROJECT_PATH}; using fallback config."
 cp "${FALLBACK_CONFIG}" .ci-eslint.fallback.config.mjs
 trap 'rm -f .ci-eslint.fallback.config.mjs' EXIT
 npx eslint --config .ci-eslint.fallback.config.mjs .

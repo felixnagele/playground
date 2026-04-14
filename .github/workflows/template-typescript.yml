@@ -50,17 +50,9 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
-      - name: Install dependencies
-        working-directory: ${{ inputs.project_path }}
-        run: npm ci ${NPM_CI_FLAGS}
-
-      - name: Install formatter
-        working-directory: ${{ inputs.project_path }}
-        run: npm install --no-save ${NPM_INSTALL_FLAGS} prettier
-
       - name: Check formatting (Prettier)
-        working-directory: ${{ inputs.project_path }}
-        run: npx prettier --check .
+        shell: bash
+        run: bash .github/scripts/run_ts_format.sh "${{ inputs.project_path }}"
 
   lint:
     name: Lint (${{ inputs.project_path }})
@@ -81,14 +73,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
-
-      - name: Install dependencies
-        working-directory: ${{ inputs.project_path }}
-        run: npm ci ${NPM_CI_FLAGS}
-
-      - name: Install lint tools
-        working-directory: ${{ inputs.project_path }}
-        run: npm install --no-save ${NPM_INSTALL_FLAGS} eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Run linting (ESLint)
         shell: bash
@@ -114,13 +98,9 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
-      - name: Install dependencies
-        working-directory: ${{ inputs.project_path }}
-        run: npm ci ${NPM_CI_FLAGS}
-
       - name: Run static type checking (TypeScript)
-        working-directory: ${{ inputs.project_path }}
-        run: npx tsc --noEmit --pretty false
+        shell: bash
+        run: bash .github/scripts/run_ts_typecheck.sh "${{ inputs.project_path }}"
 
   tests:
     name: Tests (${{ inputs.project_path }})
@@ -142,26 +122,6 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
-      - name: Install dependencies
-        working-directory: ${{ inputs.project_path }}
-        run: npm ci ${NPM_CI_FLAGS}
-
-      - name: Check if tests are configured
-        id: has-tests
-        working-directory: ${{ inputs.project_path }}
-        shell: bash
-        run: |
-          TEST_SCRIPT=$(node -e "const p=require('./package.json'); const s=((p.scripts||{}).test||'').trim().toLowerCase(); process.stdout.write(s && !s.includes('no test specified') ? 'true' : 'false');")
-          echo "has_tests=${TEST_SCRIPT}" >> "$GITHUB_OUTPUT"
-
       - name: Run tests
-        if: steps.has-tests.outputs.has_tests == 'true'
-        working-directory: ${{ inputs.project_path }}
-        env:
-          CI: true
-        run: npm test
-
-      - name: Skip tests (no suite configured)
-        if: steps.has-tests.outputs.has_tests != 'true'
-        working-directory: ${{ inputs.project_path }}
-        run: echo "No tests configured for ${{ inputs.project_path }}, skipping test run."
+        shell: bash
+        run: bash .github/scripts/run_ts_tests.sh "${{ inputs.project_path }}"
