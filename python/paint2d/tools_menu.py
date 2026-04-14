@@ -4,7 +4,7 @@ from typing import Any
 
 import pygame
 
-from .tool import Tool
+from tool import Tool
 
 
 class ToolsMenu:

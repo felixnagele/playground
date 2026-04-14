@@ -45,7 +45,7 @@ pip install -r requirements.txt
 To run the Paint2D application, execute the following command in your terminal:
 
 ```bash
-python main.py
+python -m main
 ```
 
 To run the tests, execute:

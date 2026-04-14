@@ -4,9 +4,9 @@ import time
 
 import pygame
 
-from .menu import Menu
-from .tool import Tool
-from .tools_menu import ToolsMenu
+from menu import Menu
+from tool import Tool
+from tools_menu import ToolsMenu
 
 
 # ! Initialize global variables

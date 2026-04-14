@@ -1,12 +1,12 @@
 from typing import Any
 
-from .tool_circle import Circle
-from .tool_clear import Clear
-from .tool_eraser import Eraser
-from .tool_fill import Fill
-from .tool_pen import Pen
-from .tool_pencil import Pencil
-from .tool_rectangle import Rectangle
+from tool_circle import Circle
+from tool_clear import Clear
+from tool_eraser import Eraser
+from tool_fill import Fill
+from tool_pen import Pen
+from tool_pencil import Pencil
+from tool_rectangle import Rectangle
 
 
 class Tool:
