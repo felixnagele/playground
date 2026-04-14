@@ -1,9 +1,9 @@
 import pygame
 
-from .. import main
-from ..menu import Menu
-from ..tool import Tool
-from ..tools_menu import ToolsMenu
+import main
+from menu import Menu
+from tool import Tool
+from tools_menu import ToolsMenu
 
 
 # Main Tests:
