@@ -35,12 +35,6 @@ cd <REPO_DIR>
 <run_command>
 ```
 
-### One-liner setup
-
-```bash
-git clone <REPO_URL> && cd <REPO_DIR> && <install_command> && <run_command>
-```
-
 ## 📖 Usage
 
 Describe how to use the project. Show code snippets or commands.
