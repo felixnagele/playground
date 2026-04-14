@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-FALLBACK_CONFIG="${SCRIPT_DIR}/../eslint/default-typescript-eslint.config.mjs"
+FALLBACK_CONFIG="${SCRIPT_DIR}/../configs/default-typescript-eslint.config.mjs"
 
 # shellcheck source=.github/scripts/ts_quality_common.sh
 source "${SCRIPT_DIR}/ts_quality_common.sh"
