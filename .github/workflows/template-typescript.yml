@@ -10,8 +10,8 @@ on:
 permissions: {}
 
 jobs:
-  run-test:
-    name: Quality + Test (${{ inputs.project_path }})
+  format:
+    name: Format (${{ inputs.project_path }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -33,13 +33,41 @@ jobs:
         working-directory: ${{ inputs.project_path }}
         run: npm ci --no-audit --no-fund
 
-      - name: Install quality tools
+      - name: Install formatter
         working-directory: ${{ inputs.project_path }}
-        run: npm install --no-save --no-audit --no-fund prettier eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+        run: npm install --no-save --no-audit --no-fund prettier
 
       - name: Check formatting (Prettier)
         working-directory: ${{ inputs.project_path }}
         run: npx prettier --check .
+
+  lint:
+    name: Lint (${{ inputs.project_path }})
+    needs: format
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_path }}
+        run: npm ci --no-audit --no-fund
+
+      - name: Install lint tools
+        working-directory: ${{ inputs.project_path }}
+        run: npm install --no-save --no-audit --no-fund eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Run linting (ESLint)
         working-directory: ${{ inputs.project_path }}
@@ -78,9 +106,57 @@ jobs:
             npx eslint .
           fi
 
+  typecheck:
+    name: Typecheck (${{ inputs.project_path }})
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_path }}
+        run: npm ci --no-audit --no-fund
+
       - name: Run static type checking (TypeScript)
         working-directory: ${{ inputs.project_path }}
         run: npx tsc --noEmit --pretty false
+
+  tests:
+    name: Tests (${{ inputs.project_path }})
+    needs: typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_path }}
+        run: npm ci --no-audit --no-fund
 
       - name: Check if tests are configured
         id: has-tests
