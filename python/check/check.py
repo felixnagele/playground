@@ -3,7 +3,7 @@ import sys
 import subprocess
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 
 def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
@@ -18,7 +18,7 @@ def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
 
     try:
         with open(default_config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
+            config = cast(dict[str, Any], json.load(f))
             print(f"📄 Loaded default config: {default_config_path.name}")
     except Exception as e:
         print(f"❌ Failed to load default config: {e}", file=sys.stderr)
@@ -36,7 +36,7 @@ def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
 
         try:
             with open(custom_path, "r", encoding="utf-8") as f:
-                custom_config = json.load(f)
+                custom_config = cast(dict[str, Any], json.load(f))
                 # Only take skip_repos from custom config
                 config["skip_repos"] = custom_config.get("skip_repos", [])
                 print(f"📄 Loaded skip_repos from: {custom_path}")

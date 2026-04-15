@@ -161,8 +161,7 @@ class Menu:
 
     # Import Image
     def import_image(self, pygame: Any) -> pygame.Surface:
-        image = pygame.image.load(self.menu_import_path)
-        return image
+        return pygame.image.load(self.menu_import_path)
 
     # Export Image
     def export_image(self, pygame: Any) -> None:

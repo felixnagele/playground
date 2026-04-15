@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import backup
+import requests
 from pytest import MonkeyPatch
 
 
@@ -37,7 +38,7 @@ def test_fetch_public_repos_handles_pagination(monkeypatch: MonkeyPatch) -> None
     def fake_get(*args: Any, **kwargs: Any) -> FakeResponse:
         return responses.pop(0)
 
-    monkeypatch.setattr(backup.requests, "get", fake_get)
+    monkeypatch.setattr(requests, "get", fake_get)
 
     result = backup.fetch_public_repos("user")
 

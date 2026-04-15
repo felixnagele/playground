@@ -1,7 +1,9 @@
 from collections import Counter
+import time
 from typing import Any
 
 import pytest
+import requests
 from pytest import CaptureFixture, MonkeyPatch
 
 import stats
@@ -68,8 +70,8 @@ def test_get_user_languages_counts_only_owned_repos(monkeypatch: MonkeyPatch) ->
 
         return FakeResponse(status_code=404, payload=[])
 
-    monkeypatch.setattr(stats.requests, "get", fake_get)
-    monkeypatch.setattr(stats.time, "sleep", lambda _seconds: None)
+    monkeypatch.setattr(requests, "get", fake_get)
+    monkeypatch.setattr(time, "sleep", lambda _seconds: None)
 
     language_counter, language_repos = stats.get_user_languages(
         username="alice",
