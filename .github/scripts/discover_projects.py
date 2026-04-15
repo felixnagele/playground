@@ -21,12 +21,10 @@ def discover_python_projects() -> list[str]:
         if not child.is_dir():
             continue
 
-        tests_dir = child / "tests"
-        if not tests_dir.is_dir():
+        if child.name.startswith(".") or child.name.startswith("__"):
             continue
 
-        if any(tests_dir.rglob("test_*.py")):
-            projects.append(child.name)
+        projects.append(child.name)
 
     return projects
 
@@ -46,18 +44,6 @@ def discover_typescript_projects() -> list[str]:
         lockfile_path = child / "package-lock.json"
 
         if not package_json_path.exists() or not lockfile_path.exists():
-            continue
-
-        try:
-            package_json = json.loads(package_json_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-
-        test_script = str(package_json.get("scripts", {}).get("test", "")).strip()
-        if not test_script:
-            continue
-
-        if "no test specified" in test_script.lower():
             continue
 
         projects.append(child.name)
