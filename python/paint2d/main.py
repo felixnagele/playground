@@ -8,7 +8,6 @@ from menu import Menu
 from tool import Tool
 from tools_menu import ToolsMenu
 
-
 # ! Initialize global variables
 DEFAULT_main_surface_WIDTH = 1200
 DEFAULT_main_surface_HEIGHT = 700
