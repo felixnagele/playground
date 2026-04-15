@@ -1,11 +1,12 @@
-#!/usr/bin/env python3
-from menu import Menu
-from tools_menu import ToolsMenu
-from tool import Tool
-import pygame
+import re
 import sys
 import time
-import re
+
+import pygame
+
+from menu import Menu
+from tool import Tool
+from tools_menu import ToolsMenu
 
 # ! Initialize global variables
 DEFAULT_main_surface_WIDTH = 1200
@@ -23,7 +24,7 @@ imported_image = None
 size_color_field_offset_x = 75
 
 
-def main():
+def main() -> None:
     # Define main variables
     global mouse_x
     global mouse_y
@@ -64,7 +65,6 @@ def main():
     # Define color constants
     WINDOW_BACKGROUND_COLOR = (200, 200, 200)
     BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
 
     # Define state variables
     running = True
@@ -77,11 +77,9 @@ def main():
 
     # Draw per layer
     # Dictionary to store drawn shapes and their layers
-    drawn_history = {}
+    drawn_history: dict[int, tuple[object, str]] = {}
     # Current layer
     current_layer = -1  # Default -1
-    # Current drawing type
-    current_type = None
 
     # Initialize drawn_history
     # First layer = 0
@@ -225,7 +223,7 @@ def main():
         main_surface.fill(WINDOW_BACKGROUND_COLOR)
         # Apply imported image to paint surface once at the beginning
         if (
-            imported_image != None
+            imported_image is not None
             and x_item_text == convert_int_to_string(imported_image.get_width())
             and y_item_text == convert_int_to_string(imported_image.get_height())
         ):
@@ -565,12 +563,12 @@ def main():
 
 # Update paint surface
 def paint_surface_update(
-    width: int,
-    height: int,
-    color: tuple,
+    width: str | int,
+    height: str | int,
+    color: tuple[int, int, int],
     tools_menu_offset_x: int,
     tools_menu_offset_y: int,
-):
+) -> None:
     global DEFAULT_main_surface_WIDTH
     global DEFAULT_main_surface_HEIGHT
     global paint_surface
@@ -608,7 +606,7 @@ def paint_surface_update(
 
 
 # Clear paint surface
-def clear_imported_image():
+def clear_imported_image() -> None:
     # Get global variable
     global imported_image
 
@@ -619,12 +617,12 @@ def clear_imported_image():
 # Check if mouse is within the paint surface
 def paint_surface_collision(
     mouse_x: int,
-    mouse_y,
+    mouse_y: int,
     paint_surface_offset_x: int,
     paint_surface_offset_y: int,
     paint_surface_width: int,
     paint_surface_height: int,
-):
+) -> bool:
     if (
         mouse_x > paint_surface_offset_x
         and mouse_x < paint_surface_offset_x + paint_surface_width
@@ -637,7 +635,7 @@ def paint_surface_collision(
     return False
 
 
-def convert_string_to_int(string):
+def convert_string_to_int(string: str | int | None) -> int:
     try:
         if string:
             return int(string)
@@ -649,11 +647,11 @@ def convert_string_to_int(string):
         return 0  # Return a default value in case of an error
 
 
-def convert_int_to_string(integer):
+def convert_int_to_string(integer: int) -> str:
     return str(integer)
 
 
-def is_valid_size(size):
+def is_valid_size(size: object) -> bool:
     try:
         # Check if the value is an integer
         if not isinstance(size, int):
@@ -669,7 +667,7 @@ def is_valid_size(size):
         return False
 
 
-def is_valid_hex_color(hex_color):
+def is_valid_hex_color(hex_color: str) -> bool:
     # Regular expression for a 24-bit color code in hexadecimal format
     hex_color_pattern = re.compile(r"^#([0-9a-fA-F]{6})$")
 

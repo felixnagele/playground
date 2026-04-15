@@ -1,19 +1,28 @@
+from pathlib import Path
+from typing import Any
+
 import backup
+import requests
+from pytest import MonkeyPatch
 
 
 class FakeResponse:
-    def __init__(self, payload, links=None):
+    def __init__(
+        self,
+        payload: list[dict[str, str]],
+        links: dict[str, dict[str, str]] | None = None,
+    ) -> None:
         self._payload = payload
         self.links = links or {}
 
-    def raise_for_status(self):
+    def raise_for_status(self) -> None:
         return None
 
-    def json(self):
+    def json(self) -> list[dict[str, str]]:
         return self._payload
 
 
-def test_fetch_public_repos_handles_pagination(monkeypatch):
+def test_fetch_public_repos_handles_pagination(monkeypatch: MonkeyPatch) -> None:
     responses = [
         FakeResponse(
             [{"clone_url": "https://github.com/user/repo1.git"}],
@@ -26,10 +35,10 @@ def test_fetch_public_repos_handles_pagination(monkeypatch):
         ),
     ]
 
-    def fake_get(*args, **kwargs):
+    def fake_get(*args: Any, **kwargs: Any) -> FakeResponse:
         return responses.pop(0)
 
-    monkeypatch.setattr(backup.requests, "get", fake_get)
+    monkeypatch.setattr(requests, "get", fake_get)
 
     result = backup.fetch_public_repos("user")
 
@@ -39,12 +48,14 @@ def test_fetch_public_repos_handles_pagination(monkeypatch):
     ]
 
 
-def test_backup_repos_fails_without_sources(tmp_path):
+def test_backup_repos_fails_without_sources(tmp_path: Path) -> None:
     code = backup.backup_repos(work_dir=tmp_path, username=None)
     assert code == 1
 
 
-def test_backup_repos_from_username_success(tmp_path, monkeypatch):
+def test_backup_repos_from_username_success(
+    tmp_path: Path, monkeypatch: MonkeyPatch
+) -> None:
     monkeypatch.setattr(
         backup,
         "fetch_public_repos",
@@ -57,7 +68,9 @@ def test_backup_repos_from_username_success(tmp_path, monkeypatch):
     assert code == 0
 
 
-def test_backup_repos_reads_private_file_and_reports_failures(tmp_path, monkeypatch):
+def test_backup_repos_reads_private_file_and_reports_failures(
+    tmp_path: Path, monkeypatch: MonkeyPatch
+) -> None:
     private_file = tmp_path / "backups" / "repos_private.txt"
     private_file.parent.mkdir(parents=True, exist_ok=True)
     private_file.write_text(
@@ -67,7 +80,7 @@ def test_backup_repos_reads_private_file_and_reports_failures(tmp_path, monkeypa
 
     cloned_urls = []
 
-    def fake_clone(url, target):
+    def fake_clone(url: str, target: Path) -> bool:
         cloned_urls.append(url)
         return not url.endswith("private2.git")
 

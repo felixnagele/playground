@@ -6,14 +6,35 @@ on:
       project_path:
         required: true
         type: string
+      node_version:
+        required: false
+        type: string
+        default: '24'
+      job_timeout_minutes:
+        required: false
+        type: number
+        default: 15
+      npm_ci_flags:
+        required: false
+        type: string
+        default: '--no-audit --no-fund'
+      npm_install_flags:
+        required: false
+        type: string
+        default: '--no-audit --no-fund'
 
 permissions: {}
 
+env:
+  NODE_VERSION: ${{ inputs.node_version }}
+  NPM_CI_FLAGS: ${{ inputs.npm_ci_flags }}
+  NPM_INSTALL_FLAGS: ${{ inputs.npm_install_flags }}
+
 jobs:
-  run-test:
-    name: Test (${{ inputs.project_path }})
+  format:
+    name: Format (${{ inputs.project_path }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
 
@@ -25,16 +46,82 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
-      - name: Install dependencies
-        working-directory: ${{ inputs.project_path }}
-        run: npm ci --no-audit --no-fund
+      - name: Check formatting (Prettier)
+        shell: bash
+        run: bash .github/scripts/run_ts_format.sh "${{ inputs.project_path }}"
+
+  lint:
+    name: Lint (${{ inputs.project_path }})
+    needs: format
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+
+      - name: Run linting (ESLint)
+        shell: bash
+        run: bash .github/scripts/run_ts_lint.sh "${{ inputs.project_path }}"
+
+  typecheck:
+    name: Typecheck (${{ inputs.project_path }})
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+
+      - name: Run static type checking (TypeScript)
+        shell: bash
+        run: bash .github/scripts/run_ts_typecheck.sh "${{ inputs.project_path }}"
+
+  tests:
+    name: Tests (${{ inputs.project_path }})
+    needs: typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.job_timeout_minutes }}
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
 
       - name: Run tests
-        working-directory: ${{ inputs.project_path }}
-        env:
-          CI: true
-        run: npm test
+        shell: bash
+        run: bash .github/scripts/run_ts_tests.sh "${{ inputs.project_path }}"

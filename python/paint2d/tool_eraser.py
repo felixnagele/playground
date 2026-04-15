@@ -1,26 +1,29 @@
 # Eraser
+
+from typing import Any
+
 import pygame
 
 
 class Eraser:
     name = "eraser"
     state = False
-    data = []
+    data: list[list[Any]] = []
     color = (255, 255, 255)
 
     # Constructor
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     # String representation
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Eraser: {self.state} Data:= {self.data}"
 
-    def set_state(self, state: bool):
+    def set_state(self, state: bool) -> None:
         self.state = state
 
     # Draw eraser data
-    def draw(self, pygame: pygame, surface: pygame.Surface):
+    def draw(self, pygame: Any, surface: pygame.Surface) -> None:
         for element in self.data:
             coordinates = element[0]
             sizes = element[1]
@@ -28,8 +31,13 @@ class Eraser:
 
     # Append eraser data
     def append(
-        self, mouse_x: int, mouse_y: int, size, drawn_history: dict, current_layer: int
-    ):
+        self,
+        mouse_x: int,
+        mouse_y: int,
+        size: int,
+        drawn_history: dict[int, tuple[object, str]],
+        current_layer: int,
+    ) -> None:
         if self.state:
             applied_size = 1
             if self.is_valid_size(size):
@@ -41,10 +49,10 @@ class Eraser:
             )
 
     # Clear eraser data
-    def clear(self):
+    def clear(self) -> None:
         self.data[:] = []
 
-    def is_valid_size(self, size):
+    def is_valid_size(self, size: object) -> bool:
         try:
             # Check if the value is an integer
             if not isinstance(size, int):

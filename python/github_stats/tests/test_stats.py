@@ -1,20 +1,30 @@
 from collections import Counter
+import time
+from typing import Any
+
 import pytest
+import requests
+from pytest import CaptureFixture, MonkeyPatch
 
 import stats
 
 
 class FakeResponse:
-    def __init__(self, status_code=200, payload=None, headers=None):
+    def __init__(
+        self,
+        status_code: int = 200,
+        payload: list[dict[str, Any]] | dict[str, int] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> None:
         self.status_code = status_code
         self._payload = payload or []
         self.headers = headers or {}
 
-    def json(self):
+    def json(self) -> list[dict[str, Any]] | dict[str, int]:
         return self._payload
 
 
-def test_load_config_requires_real_token(monkeypatch):
+def test_load_config_requires_real_token(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(stats, "load_dotenv", lambda: None)
     monkeypatch.setenv("TOKEN", "your_token_here")
     monkeypatch.setenv("USERNAME", "alice")
@@ -23,7 +33,7 @@ def test_load_config_requires_real_token(monkeypatch):
         stats.load_config()
 
 
-def test_get_user_languages_counts_only_owned_repos(monkeypatch):
+def test_get_user_languages_counts_only_owned_repos(monkeypatch: MonkeyPatch) -> None:
     repos_page_1 = [
         {
             "name": "app",
@@ -39,7 +49,11 @@ def test_get_user_languages_counts_only_owned_repos(monkeypatch):
         },
     ]
 
-    def fake_get(url, headers=None, params=None):
+    def fake_get(
+        url: str,
+        headers: dict[str, str] | None = None,
+        params: dict[str, int] | None = None,
+    ) -> FakeResponse:
         if url.endswith("/repos"):
             if params is not None:
                 page = params.get("page", 1)
@@ -56,8 +70,8 @@ def test_get_user_languages_counts_only_owned_repos(monkeypatch):
 
         return FakeResponse(status_code=404, payload=[])
 
-    monkeypatch.setattr(stats.requests, "get", fake_get)
-    monkeypatch.setattr(stats.time, "sleep", lambda _seconds: None)
+    monkeypatch.setattr(requests, "get", fake_get)
+    monkeypatch.setattr(time, "sleep", lambda _seconds: None)
 
     language_counter, language_repos = stats.get_user_languages(
         username="alice",
@@ -73,7 +87,7 @@ def test_get_user_languages_counts_only_owned_repos(monkeypatch):
     assert "fork" not in language_repos["Python"]
 
 
-def test_print_language_stats_handles_empty_data(capsys):
+def test_print_language_stats_handles_empty_data(capsys: CaptureFixture[str]) -> None:
     stats.print_language_stats(Counter(), {})
     captured = capsys.readouterr()
     assert "No language data found." in captured.out

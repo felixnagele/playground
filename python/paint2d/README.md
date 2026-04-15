@@ -36,16 +36,8 @@ Project inspired by the professional and free paint program: [PAINT.NET](https:/
 
 ## Dependencies
 
-How to install pygame?
-
 ```bash
-pip install pygame
-```
-
-How to install pytest?
-
-```bash
-pip install pytest
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -53,7 +45,7 @@ pip install pytest
 To run the Paint2D application, execute the following command in your terminal:
 
 ```bash
-python main.py
+python -m main
 ```
 
 To run the tests, execute:

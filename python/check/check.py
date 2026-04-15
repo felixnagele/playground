@@ -3,9 +3,10 @@ import sys
 import subprocess
 import json
 from pathlib import Path
+from typing import Any, cast
 
 
-def load_config(custom_config_path=None):
+def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
     """Load default config (extensions, folders) + optional custom config (skip_repos)."""
     # Step 1: Always load default config
     default_config_path = Path(__file__).parent / ".checkignore.default.json"
@@ -17,7 +18,7 @@ def load_config(custom_config_path=None):
 
     try:
         with open(default_config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
+            config = cast(dict[str, Any], json.load(f))
             print(f"📄 Loaded default config: {default_config_path.name}")
     except Exception as e:
         print(f"❌ Failed to load default config: {e}", file=sys.stderr)
@@ -35,7 +36,7 @@ def load_config(custom_config_path=None):
 
         try:
             with open(custom_path, "r", encoding="utf-8") as f:
-                custom_config = json.load(f)
+                custom_config = cast(dict[str, Any], json.load(f))
                 # Only take skip_repos from custom config
                 config["skip_repos"] = custom_config.get("skip_repos", [])
                 print(f"📄 Loaded skip_repos from: {custom_path}")
@@ -46,7 +47,7 @@ def load_config(custom_config_path=None):
     return config
 
 
-def should_ignore_file(path: str, config: dict) -> bool:
+def should_ignore_file(path: str, config: dict[str, Any]) -> bool:
     """Check if file should be ignored based on extension."""
     lower = path.lower()
     for ext in config.get("ignored_extensions", []):
@@ -55,12 +56,12 @@ def should_ignore_file(path: str, config: dict) -> bool:
     return False
 
 
-def should_ignore_folder(folder_name: str, config: dict) -> bool:
+def should_ignore_folder(folder_name: str, config: dict[str, Any]) -> bool:
     """Check if folder should be ignored."""
     return folder_name in config.get("ignored_folders", [])
 
 
-def should_skip_repo(repo_path: str, config: dict) -> bool:
+def should_skip_repo(repo_path: str, config: dict[str, Any]) -> bool:
     """Check if entire repo should be skipped."""
     repo_name = Path(repo_path).name
     skip_list = config.get("skip_repos", [])
@@ -91,7 +92,7 @@ def is_git_repo(path: str) -> bool:
     return os.path.isdir(os.path.join(path, ".git"))
 
 
-def find_repos(start_path: str, config: dict) -> list[str]:
+def find_repos(start_path: str, config: dict[str, Any]) -> list[str]:
     """Find all git repositories, respecting ignored_folders."""
     repos = []
     for root, dirs, files in os.walk(start_path):
@@ -113,7 +114,7 @@ def get_committed_files(repo_path: str) -> list[str]:
     return output.splitlines()
 
 
-def check_eol(repo_path: str, config: dict) -> None:
+def check_eol(repo_path: str, config: dict[str, Any]) -> None:
     """Check for EOL (end-of-line) issues."""
     output = run_cmd("git ls-files --eol", repo_path)
     if not output:
@@ -150,7 +151,7 @@ def check_eol(repo_path: str, config: dict) -> None:
             print(issue)
 
 
-def check_trailing_whitespace(repo_path: str, config: dict) -> None:
+def check_trailing_whitespace(repo_path: str, config: dict[str, Any]) -> None:
     """Check for trailing whitespace in files."""
     committed_files = get_committed_files(repo_path)
     max_file_size = 10 * 1024 * 1024  # 10 MB
@@ -187,10 +188,13 @@ def check_trailing_whitespace(repo_path: str, config: dict) -> None:
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
         except (OSError, IOError, UnicodeDecodeError) as e:
             # Warn about files that could not be read so skipped files are visible.
-            print(f"⚠️  Skipping unreadable file in trailing whitespace check: {full_path} ({e})", file=sys.stderr)
+            print(
+                f"⚠️  Skipping unreadable file in trailing whitespace check: {full_path} ({e})",
+                file=sys.stderr,
+            )
 
 
-def check_repo(repo_path: str, config: dict) -> None:
+def check_repo(repo_path: str, config: dict[str, Any]) -> None:
     """Run all checks on a repository."""
     if should_skip_repo(repo_path, config):
         print(f"\n⏭️  Skipping: {repo_path}")
@@ -201,7 +205,7 @@ def check_repo(repo_path: str, config: dict) -> None:
     check_trailing_whitespace(repo_path, config)
 
 
-def process_path(path: str, config: dict) -> None:
+def process_path(path: str, config: dict[str, Any]) -> None:
     """Process a path - either a single repo or search for repos."""
     if not os.path.exists(path):
         print(f"❌ ERROR: Path does not exist: {path}", file=sys.stderr)
@@ -224,7 +228,7 @@ def process_path(path: str, config: dict) -> None:
         check_repo(repo, config)
 
 
-def print_usage():
+def print_usage() -> None:
     print("Usage:")
     print("  python check.py [path] [--config <file>]")
     print()

@@ -1,12 +1,13 @@
 import pygame
-from main import *
-from menu import *
-from tools_menu import *
-from tool import *
+
+import main
+from menu import Menu
+from tool import Tool
+from tools_menu import ToolsMenu
 
 
 # Main Tests:
-def test_paint_surface_collision():
+def test_paint_surface_collision() -> None:
     # Initialize parameters
     mouse_x = 50
     mouse_y = 50
@@ -16,7 +17,7 @@ def test_paint_surface_collision():
     paint_surface_height = 100
 
     # Test case 1: Mouse is within the paint surface
-    result = paint_surface_collision(
+    result = main.paint_surface_collision(
         mouse_x,
         mouse_y,
         paint_surface_offset_x,
@@ -27,7 +28,7 @@ def test_paint_surface_collision():
     assert result is True
 
     # Test case 2: Mouse is outside the paint surface
-    result = paint_surface_collision(
+    result = main.paint_surface_collision(
         200,
         200,
         paint_surface_offset_x,
@@ -38,72 +39,72 @@ def test_paint_surface_collision():
     assert result is False
 
 
-def test_convert_string_to_int():
+def test_convert_string_to_int() -> None:
     # Test case 1: Convert a valid string to an integer
-    result = convert_string_to_int("42")
+    result = main.convert_string_to_int("42")
     assert result == 42
 
     # Test case 2: Convert an empty string to an integer (default value)
-    result = convert_string_to_int("")
+    result = main.convert_string_to_int("")
     assert result == 0
 
     # Test case 3: Attempt to convert an invalid string to an integer
-    result = convert_string_to_int("abc")
+    result = main.convert_string_to_int("abc")
     assert result == 0  # Should return the default value
 
 
-def test_convert_int_to_string():
+def test_convert_int_to_string() -> None:
     # Test case 1: Convert a positive integer to a string
-    result = convert_int_to_string(42)
+    result = main.convert_int_to_string(42)
     assert result == "42"
 
     # Test case 2: Convert a negative integer to a string
-    result = convert_int_to_string(-10)
+    result = main.convert_int_to_string(-10)
     assert result == "-10"
 
 
-def test_is_valid_size():
+def test_is_valid_size() -> None:
     # Test case 1: Valid size (within the range)
-    result = is_valid_size(50)
+    result = main.is_valid_size(50)
     assert result
 
     # Test case 2: Invalid size (below the range)
-    result = is_valid_size(0)
+    result = main.is_valid_size(0)
     assert not result
 
     # Test case 3: Invalid size (above the range)
-    result = is_valid_size(150)
+    result = main.is_valid_size(150)
     assert not result
 
     # Test case 4: Invalid size (not an integer)
-    result = is_valid_size("invalid")
+    result = main.is_valid_size("invalid")
     assert not result
 
 
-def test_is_valid_hex_color():
+def test_is_valid_hex_color() -> None:
     # Test case 1: Valid hex color code
-    result = is_valid_hex_color("#3a4f87")
+    result = main.is_valid_hex_color("#3a4f87")
     assert result
 
     # Test case 2: Valid hex color code with uppercase letters
-    result = is_valid_hex_color("#ABCDEF")
+    result = main.is_valid_hex_color("#ABCDEF")
     assert result
 
     # Test case 3: Invalid hex color code (missing # symbol)
-    result = is_valid_hex_color("3a4f87")
+    result = main.is_valid_hex_color("3a4f87")
     assert not result
 
     # Test case 4: Invalid hex color code (not 6 characters long)
-    result = is_valid_hex_color("#abc")
+    result = main.is_valid_hex_color("#abc")
     assert not result
 
     # Test case 5: Invalid hex color code (contains invalid characters)
-    result = is_valid_hex_color("#ghijkl")
+    result = main.is_valid_hex_color("#ghijkl")
     assert not result
 
 
 # Menu Tests:
-def test_menu_init():
+def test_menu_init() -> None:
     window_width = 800
     window_height = 600
     main_surface = pygame.Surface((window_width, window_height))
@@ -124,7 +125,7 @@ def test_menu_init():
 
 
 # ToolMenu Tests:
-def test_tools_menu_init():
+def test_tools_menu_init() -> None:
     window_width = 800
     window_height = 600
     main_surface = pygame.Surface((window_width, window_height))
@@ -145,7 +146,7 @@ def test_tools_menu_init():
 
 
 # Tool Tests:
-def test_tool_init():
+def test_tool_init() -> None:
     tool = Tool()
 
     assert isinstance(tool.tool_object_dict, dict)
@@ -181,7 +182,7 @@ def test_tool_init():
     assert all(value is False for value in tool.tool_states.values())
 
 
-def test_tool_set_tool_state():
+def test_tool_set_tool_state() -> None:
     tool = Tool()
 
     # Test setting the state of a tool
@@ -207,7 +208,7 @@ def test_tool_set_tool_state():
     assert new_layer == current_layer + 3
 
 
-def test_tool_getters():
+def test_tool_getters() -> None:
     tool = Tool()
 
     # Test getters
