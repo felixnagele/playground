@@ -160,8 +160,7 @@ class Menu:
         self.main_surface.blit(text_max_y, text_rect_max_y)
 
     # Import Image
-    def import_image(self, pygame_module: Any) -> pygame.Surface:
-        _ = pygame_module
+    def import_image(self, pygame: Any) -> pygame.Surface:
         return pygame.image.load(self.menu_import_path)
 
     # Export Image
