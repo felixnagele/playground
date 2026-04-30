@@ -91,3 +91,95 @@ def test_print_language_stats_handles_empty_data(capsys: CaptureFixture[str]) ->
     stats.print_language_stats(Counter(), {})
     captured = capsys.readouterr()
     assert "No language data found." in captured.out
+
+
+def test_print_language_stats_with_data(capsys: CaptureFixture[str]) -> None:
+    counter: Counter[str] = Counter({"Python": 200, "TypeScript": 100})
+    repos_map: dict[str, set[str]] = {
+        "Python": {"repo1", "repo2"},
+        "TypeScript": {"repo1"},
+    }
+    stats.print_language_stats(counter, repos_map)
+    captured = capsys.readouterr()
+    assert "Python" in captured.out
+    assert "TypeScript" in captured.out
+    # Python should be first (most bytes)
+    assert captured.out.index("Python") < captured.out.index("TypeScript")
+
+
+def test_load_config_raises_missing_username(monkeypatch: MonkeyPatch) -> None:
+    monkeypatch.setattr(stats, "load_dotenv", lambda: None)
+    monkeypatch.setenv("TOKEN", "validtoken123")
+    monkeypatch.delenv("USERNAME", raising=False)
+
+    with pytest.raises(ValueError, match="USERNAME must be set"):
+        stats.load_config()
+
+
+def test_get_user_languages_excludes_repos(monkeypatch: MonkeyPatch) -> None:
+    repos_page_1 = [
+        {
+            "name": "excluded_repo",
+            "owner": {"login": "alice"},
+            "permissions": {"admin": True},
+            "languages_url": "https://api.github.com/repos/alice/excluded_repo/languages",
+        },
+        {
+            "name": "included_repo",
+            "owner": {"login": "alice"},
+            "permissions": {"admin": True},
+            "languages_url": "https://api.github.com/repos/alice/included_repo/languages",
+        },
+    ]
+
+    def fake_get(
+        url: str,
+        headers: dict[str, str] | None = None,
+        params: dict[str, int] | None = None,
+    ) -> FakeResponse:
+        if url.endswith("/repos"):
+            page = params.get("page", 1) if params else 1
+            if page == 1:
+                return FakeResponse(status_code=200, payload=repos_page_1)
+            return FakeResponse(status_code=200, payload=[])
+        if url.endswith("/languages"):
+            return FakeResponse(
+                status_code=200,
+                payload={"Python": 100},
+                headers={"X-RateLimit-Remaining": "10", "X-RateLimit-Reset": "0"},
+            )
+        return FakeResponse(status_code=404, payload=[])
+
+    monkeypatch.setattr(requests, "get", fake_get)
+    monkeypatch.setattr(time, "sleep", lambda _seconds: None)
+
+    counter, repos_map = stats.get_user_languages(
+        username="alice",
+        token="token",
+        include_private=True,
+        exclude_repos={"excluded_repo"},
+        only_owned=False,
+    )
+
+    assert "included_repo" in repos_map.get("Python", set())
+    assert "excluded_repo" not in repos_map.get("Python", set())
+
+
+def test_get_user_languages_raises_on_http_error(monkeypatch: MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        requests, "get", lambda *a, **kw: FakeResponse(status_code=401, payload=[])
+    )
+
+    with pytest.raises(Exception, match="HTTP status: 401"):
+        stats.get_user_languages(username="alice", token="token")
+
+
+def test_get_user_languages_empty_repo_list(monkeypatch: MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        requests, "get", lambda *a, **kw: FakeResponse(status_code=200, payload=[])
+    )
+
+    counter, repos_map = stats.get_user_languages(username="alice", token="token")
+
+    assert len(counter) == 0
+    assert len(repos_map) == 0
