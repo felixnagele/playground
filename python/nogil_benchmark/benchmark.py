@@ -45,9 +45,17 @@ if __name__ == "__main__":
     print(f"Found {cpu_cores} CPU cores.")
     print(f"Running benchmarks with all {cpu_cores} threads...")
 
+    script_path = os.path.abspath(__file__)
+    venv_bin_dir = "Scripts" if os.name == "nt" else "bin"
+    venv_python = "python.exe" if os.name == "nt" else "python"
+
     # GIL ON
     classic_res = subprocess.run(
-        [os.path.join(".venv-classic", "Scripts", "python.exe"), __file__, "--collect"],
+        [
+            os.path.join(".venv-classic", venv_bin_dir, venv_python),
+            script_path,
+            "--collect",
+        ],
         capture_output=True,
         text=True,
         check=True,
@@ -58,7 +66,11 @@ if __name__ == "__main__":
     nogil_env = os.environ.copy()
     nogil_env["PYTHON_GIL"] = "0"
     nogil_res = subprocess.run(
-        [os.path.join(".venv-nogil", "Scripts", "python.exe"), __file__, "--collect"],
+        [
+            os.path.join(".venv-nogil", venv_bin_dir, venv_python),
+            script_path,
+            "--collect",
+        ],
         capture_output=True,
         text=True,
         env=nogil_env,
