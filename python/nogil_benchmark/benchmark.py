@@ -86,5 +86,5 @@ if __name__ == "__main__":
     print(f"{metric_label:<22} | {c_tm:<16} sec | {n_tm:<16} sec")
     print("-" * 70)
     print(
-        f"{'Time (N/1)':<22} | {c_tm/c_t1:.2f}x execution time | {n_tm/n_t1:.2f}x execution time"
+        f"{'Time (N/1)':<22} | {c_tm / c_t1:.2f}x execution time | {n_tm / n_t1:.2f}x execution time"
     )

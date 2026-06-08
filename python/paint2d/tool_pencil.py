@@ -1,6 +1,6 @@
 # Pencil
 
-from typing import Any
+from typing import Any, ClassVar
 
 import pygame
 
@@ -8,8 +8,8 @@ import pygame
 class Pencil:
     name = "pencil"
     state = False
-    data_x: list[int] = []
-    data_y: list[int] = []
+    data_x: ClassVar[list[int]] = []
+    data_y: ClassVar[list[int]] = []
     size = 1
     color = (0, 0, 0)
 

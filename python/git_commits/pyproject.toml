@@ -1,0 +1,36 @@
+[project]
+name = "git_commits"
+version = "1.0.0"
+description = "Git commits project"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "gitpython>=3.1.50",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.0.3",
+  "ruff>=0.11.9",
+  "mypy>=1.15.0",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+# Ignore all releases published in the last 7 days
+exclude-newer = "7 days"
+
+# Allow only the official index (protection against dependency confusion)
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "ASYNC", "RUF", "S"]
+
+[tool.mypy]
+strict = true

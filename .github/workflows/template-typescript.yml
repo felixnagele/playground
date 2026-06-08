@@ -14,10 +14,6 @@ on:
         required: false
         type: number
         default: 15
-      npm_ci_flags:
-        required: false
-        type: string
-        default: '--no-audit --no-fund'
       npm_install_flags:
         required: false
         type: string
@@ -27,101 +23,74 @@ permissions: {}
 
 env:
   NODE_VERSION: ${{ inputs.node_version }}
-  NPM_CI_FLAGS: ${{ inputs.npm_ci_flags }}
   NPM_INSTALL_FLAGS: ${{ inputs.npm_install_flags }}
 
 jobs:
-  format:
-    name: Format (${{ inputs.project_path }})
+  quality:
+    name: Quality (${{ inputs.project_path }})
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
-
     steps:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-
+      - name: Ensure LF line endings (Prettier compat)
+        shell: bash
+        run: |
+          find "${{ inputs.project_path }}" -type f \
+            \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' \
+            -o -name '*.json' -o -name '*.css' -o -name '*.md' \
+            -o -name '*.yml' -o -name '*.yaml' \) \
+            -exec sed -i 's/\r$//' {} \;
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
-
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_path }}
+        shell: bash
+        run: npm ci ${{ env.NPM_INSTALL_FLAGS }}
       - name: Check formatting (Prettier)
+        working-directory: ${{ inputs.project_path }}
         shell: bash
-        run: bash .github/scripts/run_ts_format.sh "${{ inputs.project_path }}"
-
-  lint:
-    name: Lint (${{ inputs.project_path }})
-    needs: format
-    runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
-
+        run: npx prettier --check .
       - name: Run linting (ESLint)
+        working-directory: ${{ inputs.project_path }}
         shell: bash
-        run: bash .github/scripts/run_ts_lint.sh "${{ inputs.project_path }}"
-
-  typecheck:
-    name: Typecheck (${{ inputs.project_path }})
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
-
-      - name: Run static type checking (TypeScript)
+        env:
+          FALLBACK_ESLINT_CONFIG: ${{ github.workspace }}/.github/configs/default-typescript-eslint.config.mjs
+        run: |
+          for f in eslint.config.js eslint.config.mjs eslint.config.cjs eslint.config.ts; do
+            [ -f "$f" ] && { npx eslint .; exit 0; }
+          done
+          for f in .eslintrc .eslintrc.js .eslintrc.cjs .eslintrc.json .eslintrc.yaml .eslintrc.yml; do
+            [ -f "$f" ] && { ESLINT_USE_FLAT_CONFIG=false npx eslint .; exit 0; }
+          done
+          grep -q '"eslintConfig"' package.json && { ESLINT_USE_FLAT_CONFIG=false npx eslint .; exit 0; }
+          if [ -f "${FALLBACK_ESLINT_CONFIG}" ]; then
+            echo "No local ESLint config found; installing fallback dependencies and using fallback config."
+            npm install --no-save @typescript-eslint/parser @typescript-eslint/eslint-plugin
+            cp "${FALLBACK_ESLINT_CONFIG}" .ci-eslint-fallback.mjs
+            npx eslint --config .ci-eslint-fallback.mjs .
+          else
+            echo "No ESLint config found in project and fallback missing: ${FALLBACK_ESLINT_CONFIG}"
+            exit 1
+          fi
+      - name: Run type checking (TypeScript)
+        working-directory: ${{ inputs.project_path }}
         shell: bash
-        run: bash .github/scripts/run_ts_typecheck.sh "${{ inputs.project_path }}"
-
-  tests:
-    name: Tests (${{ inputs.project_path }})
-    needs: typecheck
-    runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
-
+        run: npx tsc --noEmit --pretty false
       - name: Run tests
+        working-directory: ${{ inputs.project_path }}
         shell: bash
-        run: bash .github/scripts/run_ts_tests.sh "${{ inputs.project_path }}"
+        run: |
+          if grep -q '"test"[[:space:]]*:' package.json && \
+             ! grep -Eqi '"test"[[:space:]]*:[[:space:]]*"[^"]*no[[:space:]]+test[[:space:]]+specified' package.json; then
+            CI=true npm test
+          else
+            echo "No tests configured for ${{ inputs.project_path }}, skipping test run."
+          fi

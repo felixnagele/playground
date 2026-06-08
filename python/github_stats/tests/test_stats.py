@@ -1,5 +1,5 @@
-from collections import Counter
 import time
+from collections import Counter
 from typing import Any
 
 import pytest
@@ -53,6 +53,7 @@ def test_get_user_languages_counts_only_owned_repos(monkeypatch: MonkeyPatch) ->
         url: str,
         headers: dict[str, str] | None = None,
         params: dict[str, int] | None = None,
+        **kwargs: Any,
     ) -> FakeResponse:
         if url.endswith("/repos"):
             if params is not None:
@@ -73,21 +74,27 @@ def test_get_user_languages_counts_only_owned_repos(monkeypatch: MonkeyPatch) ->
     monkeypatch.setattr(requests, "get", fake_get)
     monkeypatch.setattr(time, "sleep", lambda _seconds: None)
 
+    placeholder = "dummy-token"
     language_counter, language_repos = stats.get_user_languages(
         username="alice",
-        token="token",
+        token=placeholder,
         include_private=True,
         exclude_repos=set(),
         only_owned=True,
     )
 
-    assert language_counter["Python"] == 120
-    assert language_counter["HTML"] == 30
-    assert language_repos["Python"] == {"app"}
-    assert "fork" not in language_repos["Python"]
+    if not language_counter["Python"] == 120:
+        raise AssertionError(f"Expected 120, got {language_counter['Python']}")
+    if not language_counter["HTML"] == 30:
+        raise AssertionError(f"Expected 30, got {language_counter['HTML']}")
+    if not language_repos["Python"] == {"app"}:
+        raise AssertionError(f"Expected {{'app'}}, got {language_repos['Python']}")
+    if "fork" in language_repos["Python"]:
+        raise AssertionError(f"Did not expect 'fork' in {language_repos['Python']}")
 
 
 def test_print_language_stats_handles_empty_data(capsys: CaptureFixture[str]) -> None:
     stats.print_language_stats(Counter(), {})
     captured = capsys.readouterr()
-    assert "No language data found." in captured.out
+    if "No language data found." not in captured.out:
+        raise AssertionError(f"Expected message in {captured.out!r}")

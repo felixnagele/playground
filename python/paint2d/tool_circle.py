@@ -1,15 +1,15 @@
 # Circle
 
-from typing import Any
+import re
+from typing import Any, ClassVar
 
 import pygame
-import re
 
 
 class Circle:
     name = "circle"
     state = False
-    data: list[list[Any]] = []
+    data: ClassVar[list[list[Any]]] = []
     border = 1
 
     # Constructor

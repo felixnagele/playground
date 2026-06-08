@@ -21,162 +21,45 @@ env:
   PYTHON_VERSION: ${{ inputs.python_version }}
 
 jobs:
-  format:
-    name: Format (${{ inputs.project_path }})
+  quality:
+    name: Quality (${{ inputs.project_path }})
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.job_timeout_minutes }}
     permissions:
       contents: read
-
     steps:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Setup uv with Python ${{ env.PYTHON_VERSION }}
+        uses: astral-sh/setup-uv@v7
         with:
+          enable-cache: true
+          cache-suffix: ${{ inputs.project_path }}
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
-
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install black
-          if [ -f "${{ inputs.project_path }}/requirements.txt" ]; then
-            python -m pip install -r "${{ inputs.project_path }}/requirements.txt"
-          fi
-          for req_file in requirements-dev.txt requirements-test.txt dev-requirements.txt test-requirements.txt; do
-            if [ -f "${{ inputs.project_path }}/$req_file" ]; then
-              python -m pip install -r "${{ inputs.project_path }}/$req_file"
-            fi
-          done
-
-      - name: Check formatting (Black)
-        run: black --check "${{ inputs.project_path }}"
-
-  lint:
-    name: Lint (${{ inputs.project_path }})
-    needs: format
-    runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install ruff
-          if [ -f "${{ inputs.project_path }}/requirements.txt" ]; then
-            python -m pip install -r "${{ inputs.project_path }}/requirements.txt"
-          fi
-          for req_file in requirements-dev.txt requirements-test.txt dev-requirements.txt test-requirements.txt; do
-            if [ -f "${{ inputs.project_path }}/$req_file" ]; then
-              python -m pip install -r "${{ inputs.project_path }}/$req_file"
-            fi
-          done
-
+        run: uv sync --frozen --directory ${{ inputs.project_path }}
+      - name: Check formatting (Ruff)
+        run: uv run --directory ${{ inputs.project_path }} ruff format --check .
       - name: Run linting (Ruff)
-        run: ruff check "${{ inputs.project_path }}"
-
-  typecheck:
-    name: Typecheck (${{ inputs.project_path }})
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install mypy pytest pytest-timeout
-          if [ -f "${{ inputs.project_path }}/requirements.txt" ]; then
-            python -m pip install -r "${{ inputs.project_path }}/requirements.txt"
-          fi
-          for req_file in requirements-dev.txt requirements-test.txt dev-requirements.txt test-requirements.txt; do
-            if [ -f "${{ inputs.project_path }}/$req_file" ]; then
-              python -m pip install -r "${{ inputs.project_path }}/$req_file"
-            fi
-          done
-
-      - name: Run static type checking (Mypy)
-        run: mypy --strict "${{ inputs.project_path }}"
-
-  tests:
-    name: Tests (${{ inputs.project_path }})
-    needs: typecheck
-    runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: ${{ inputs.project_path }}/requirements.txt
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-timeout
-          if [ -f "${{ inputs.project_path }}/requirements.txt" ]; then
-            python -m pip install -r "${{ inputs.project_path }}/requirements.txt"
-          fi
-          for req_file in requirements-dev.txt requirements-test.txt dev-requirements.txt test-requirements.txt; do
-            if [ -f "${{ inputs.project_path }}/$req_file" ]; then
-              python -m pip install -r "${{ inputs.project_path }}/$req_file"
-            fi
-          done
-
+        run: uv run --directory ${{ inputs.project_path }} ruff check .
+      - name: Run type checking (Mypy)
+        run: uv run --directory ${{ inputs.project_path }} mypy .
       - name: Check if tests exist
         id: has-tests
         shell: bash
         run: |
-          if [ -d "${{ inputs.project_path }}/tests" ] && find "${{ inputs.project_path }}/tests" -name 'test_*.py' | grep -q .; then
+          cd "${{ inputs.project_path }}"
+          if [ -d tests ] && find tests -name 'test_*.py' -maxdepth 1 | grep -q .; then
             echo "has_tests=true" >> "$GITHUB_OUTPUT"
           else
             echo "has_tests=false" >> "$GITHUB_OUTPUT"
           fi
-
       - name: Run tests
         if: steps.has-tests.outputs.has_tests == 'true'
         env:
           CI: true
-        run: pytest "${{ inputs.project_path }}/tests" -q
-
+        run: uv run --directory ${{ inputs.project_path }} pytest
       - name: Skip tests (no suite found)
         if: steps.has-tests.outputs.has_tests != 'true'
         run: echo "No tests found for ${{ inputs.project_path }}, skipping test run."

@@ -24,6 +24,10 @@ def discover_python_projects() -> list[str]:
         if child.name.startswith(".") or child.name.startswith("__"):
             continue
 
+        pyproject_path = child / "pyproject.toml"
+        if not pyproject_path.exists():
+            continue
+
         projects.append(child.name)
 
     return projects

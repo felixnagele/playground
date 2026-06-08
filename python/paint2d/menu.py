@@ -1,6 +1,6 @@
 # Menu
 
-from typing import Any
+from typing import Any, ClassVar
 
 import pygame
 
@@ -8,15 +8,26 @@ import pygame
 class Menu:
     main_surface: pygame.Surface
     paint_surface: pygame.Surface
-    menu_item_list = ["Import", "Export", "Dimension", "X", "Y", "MX", "MY"]
+    menu_item_list: ClassVar[list[str]] = [
+        "Import",
+        "Export",
+        "Dimension",
+        "X",
+        "Y",
+        "MX",
+        "MY",
+    ]
     width = 120
     height = 40
     menu_item_x_start = 20
     menu_item_y_start = 20
     menu_item_gap = 20
-    menu_item_x: list[int] = []
-    menu_item_y: list[int] = []
-    menu_color_status = [(52, 152, 219), (240, 240, 240)]  # default, #textfield
+    menu_item_x: list[int]
+    menu_item_y: list[int]
+    menu_color_status: ClassVar[list[tuple[int, int, int]]] = [
+        (52, 152, 219),
+        (240, 240, 240),
+    ]
     menu_color_pointer = 0
     menu_color_border = (0, 0, 0)
     menu_font = None
@@ -27,7 +38,7 @@ class Menu:
     )  # Convert list to dict with all values on False
     menu_import_path = "rsc/imports/paint2d_import.png"
     menu_export_path = "rsc/exports/paint2d_export.png"
-    menu_x_y_location_list: list[int] = []
+    menu_x_y_location_list: list[int]
     menu_x_y_font_size = 30
 
     # Constructor

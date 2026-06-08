@@ -17,3 +17,13 @@ coverage
 *.bak
 
 docs/_site
+
+.venv/
+.venv-classic/
+.venv-nogil/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+uv.lock

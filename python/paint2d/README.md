@@ -37,7 +37,7 @@ Project inspired by the professional and free paint program: [PAINT.NET](https:/
 ## Dependencies
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 ## Usage
@@ -45,11 +45,11 @@ pip install -r requirements.txt
 To run the Paint2D application, execute the following command in your terminal:
 
 ```bash
-python -m main
+uv run python -m main
 ```
 
 To run the tests, execute:
 
 ```bash
-python -m pytest tests/
+uv run pytest
 ```

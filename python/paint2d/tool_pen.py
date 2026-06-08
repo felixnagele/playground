@@ -1,15 +1,15 @@
 # Pen
 
-from typing import Any
+import re
+from typing import Any, ClassVar
 
 import pygame
-import re
 
 
 class Pen:
     name = "pen"
     state = False
-    data: list[list[Any]] = []
+    data: ClassVar[list[list[Any]]] = []
 
     # Constructor
     def __init__(self) -> None:
