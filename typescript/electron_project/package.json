@@ -1,0 +1,81 @@
+{
+  "name": "electron-project",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "Electron TypeScript project template",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "compile": "tsc -p tsconfig.build.json",
+    "bundle-renderer": "node esbuild.renderer.mjs",
+    "copy-assets-build": "copyfiles -u 1 \"src/renderer/**/*.{html,css,js}\" \"src/renderer/assets/**/*\" build",
+    "copy-assets-dist": "copyfiles -u 1 \"src/renderer/**/*.{html,css,js}\" \"src/renderer/assets/**/*\" dist",
+    "obfuscate": "javascript-obfuscator build --output dist --config obfuscator.config.js --source-map false",
+    "build": "pnpm compile && pnpm bundle-renderer && pnpm copy-assets-build && pnpm obfuscate && pnpm copy-assets-dist",
+    "start": "pnpm build && electron .",
+    "dev": "pnpm build && electron ./build/main/main.js",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "test": "vitest --coverage --run",
+    "validate": "pnpm format:check && pnpm lint && pnpm type-check",
+    "fix": "pnpm format && pnpm lint:fix",
+    "pack": "pnpm build && electron-builder --dir",
+    "dist": "pnpm build && electron-builder"
+  },
+  "build": {
+    "appId": "com.example.app",
+    "productName": "ElectronApp",
+    "files": [
+      "dist/**/*",
+      "!dist/**/*.map",
+      "node_modules/**/*"
+    ],
+    "extraMetadata": {
+      "main": "dist/main/main.js"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "resources/macos/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "resources/windows/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "resources/linux/icon.png",
+      "category": "Utility"
+    },
+    "directories": {
+      "buildResources": "resources"
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.9.1",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
+    "@typescript-eslint/parser": "^8.60.1",
+    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/eslint-plugin": "^1.6.19",
+    "@vitest/ui": "^4.1.8",
+    "copyfiles": "^2.4.1",
+    "electron": "^42.3.0",
+    "electron-builder": "^26.15.2",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.4.1",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.16.2",
+    "globals": "^17.6.0",
+    "javascript-obfuscator": "^5.4.3",
+    "jiti": "^2.7.0",
+    "prettier": "^3.8.3",
+    "rimraf": "^6.1.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1",
+    "vitest": "^4.1.8"
+  }
+}
