@@ -1,9 +1,10 @@
 from pathlib import Path
 from typing import Any
 
-import backup
 import requests
 from pytest import MonkeyPatch
+
+import backup
 
 
 class FakeResponse:
@@ -42,15 +43,18 @@ def test_fetch_public_repos_handles_pagination(monkeypatch: MonkeyPatch) -> None
 
     result = backup.fetch_public_repos("user")
 
-    assert result == [
+    expected = [
         "https://github.com/user/repo1.git",
         "https://github.com/user/repo2.git",
     ]
+    if not result == expected:
+        raise AssertionError(f"Expected {result} to equal {expected}")
 
 
 def test_backup_repos_fails_without_sources(tmp_path: Path) -> None:
     code = backup.backup_repos(work_dir=tmp_path, username=None)
-    assert code == 1
+    if not code == 1:
+        raise AssertionError(f"Expected code 1, got {code}")
 
 
 def test_backup_repos_from_username_success(
@@ -65,7 +69,8 @@ def test_backup_repos_from_username_success(
 
     code = backup.backup_repos(work_dir=tmp_path, username="user")
 
-    assert code == 0
+    if not code == 0:
+        raise AssertionError(f"Expected code 0, got {code}")
 
 
 def test_backup_repos_reads_private_file_and_reports_failures(
@@ -88,5 +93,7 @@ def test_backup_repos_reads_private_file_and_reports_failures(
 
     code = backup.backup_repos(work_dir=tmp_path, username=None)
 
-    assert len(cloned_urls) == 2
-    assert code == 1
+    if not len(cloned_urls) == 2:
+        raise AssertionError(f"Expected 2 cloned URLs, got {len(cloned_urls)}")
+    if not code == 1:
+        raise AssertionError(f"Expected code 1, got {code}")

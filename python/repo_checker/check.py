@@ -1,13 +1,14 @@
-import os
-import sys
-import subprocess
 import json
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any, cast
 
 
 def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
-    """Load default config (extensions, folders) + optional custom config (skip_repos)."""
+    """Load default config (extensions, folders) + optional custom config (skip_repos)."""  # noqa: E501
     # Step 1: Always load default config
     default_config_path = Path(__file__).parent / ".checkignore.default.json"
     if not default_config_path.exists():
@@ -17,7 +18,7 @@ def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
         sys.exit(1)
 
     try:
-        with open(default_config_path, "r", encoding="utf-8") as f:
+        with open(default_config_path, encoding="utf-8") as f:
             config = cast(dict[str, Any], json.load(f))
             print(f"📄 Loaded default config: {default_config_path.name}")
     except Exception as e:
@@ -35,7 +36,7 @@ def load_config(custom_config_path: str | None = None) -> dict[str, Any]:
             sys.exit(1)
 
         try:
-            with open(custom_path, "r", encoding="utf-8") as f:
+            with open(custom_path, encoding="utf-8") as f:
                 custom_config = cast(dict[str, Any], json.load(f))
                 # Only take skip_repos from custom config
                 config["skip_repos"] = custom_config.get("skip_repos", [])
@@ -75,16 +76,26 @@ def should_skip_repo(repo_path: str, config: dict[str, Any]) -> bool:
     return False
 
 
-def run_cmd(cmd: str, cwd: str) -> str:
-    """Run shell command and return output."""
+def _run_git(args: list[str], cwd: str) -> str:
+    """Run a git command and return stdout, or '' on failure."""
+    git = shutil.which("git") or "git"
+    proc = subprocess.Popen(
+        executable=git,
+        args=args,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
     try:
-        result = subprocess.run(
-            cmd, cwd=cwd, shell=True, capture_output=True, text=True, timeout=30
-        )
-        return result.stdout.strip()
-    except Exception as e:
-        print(f"⚠️ Command failed: {e}", file=sys.stderr)
+        out, _ = proc.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.communicate()
         return ""
+    if proc.returncode != 0:
+        return ""
+    return out.strip() if out else ""
 
 
 def is_git_repo(path: str) -> bool:
@@ -95,7 +106,7 @@ def is_git_repo(path: str) -> bool:
 def find_repos(start_path: str, config: dict[str, Any]) -> list[str]:
     """Find all git repositories, respecting ignored_folders."""
     repos = []
-    for root, dirs, files in os.walk(start_path):
+    for root, dirs, _files in os.walk(start_path):
         # Remove ignored folders from search
         dirs[:] = [d for d in dirs if not should_ignore_folder(d, config)]
 
@@ -108,7 +119,7 @@ def find_repos(start_path: str, config: dict[str, Any]) -> list[str]:
 
 def get_committed_files(repo_path: str) -> list[str]:
     """Get list of files tracked by git."""
-    output = run_cmd("git ls-files", repo_path)
+    output = _run_git(["ls-files"], repo_path)
     if not output:
         return []
     return output.splitlines()
@@ -116,7 +127,7 @@ def get_committed_files(repo_path: str) -> list[str]:
 
 def check_eol(repo_path: str, config: dict[str, Any]) -> None:
     """Check for EOL (end-of-line) issues."""
-    output = run_cmd("git ls-files --eol", repo_path)
+    output = _run_git(["ls-files", "--eol"], repo_path)
     if not output:
         return
 
@@ -180,16 +191,16 @@ def check_trailing_whitespace(repo_path: str, config: dict[str, Any]) -> None:
                 # Skip large files silently
                 continue
 
-            with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(full_path, encoding="utf-8", errors="ignore") as f:
                 for i, line in enumerate(f, start=1):
                     # Check if line has trailing whitespace (excluding newlines)
                     stripped = line.rstrip("\n\r")
                     if stripped and stripped != stripped.rstrip():
                         print(f"❌ Trailing whitespace: {full_path}:{i}")
-        except (OSError, IOError, UnicodeDecodeError) as e:
+        except (OSError, UnicodeDecodeError) as e:
             # Warn about files that could not be read so skipped files are visible.
             print(
-                f"⚠️  Skipping unreadable file in trailing whitespace check: {full_path} ({e})",
+                f"⚠️  Skipping unreadable file: {full_path} ({e})",
                 file=sys.stderr,
             )
 

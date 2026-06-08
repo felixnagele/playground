@@ -138,5 +138,5 @@ print(f"✅ Successful updates: {success}")
 print(f"❌ Failed updates: {failed}")
 print(f"⏭️ Skipped (dirty repos): {skipped}")
 print(
-    f"🎯 Success rate: {success}/{total} ({(success/total*100 if total else 0):.1f}%)"
+    f"🎯 Success rate: {success}/{total} ({(success / total * 100 if total else 0):.1f}%)"
 )

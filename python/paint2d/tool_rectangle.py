@@ -1,17 +1,17 @@
 # Rectangle
 
-from typing import Any
+import re
+from typing import Any, ClassVar
 
 import pygame
-import re
 
 
 class Rectangle:
     name = "rectangle"
     state = False
-    data_x: list[int] = []
-    data_y: list[int] = []
-    data_properties: list[list[Any]] = []
+    data_x: ClassVar[list[int]] = []
+    data_y: ClassVar[list[int]] = []
+    data_properties: ClassVar[list[list[Any]]] = []
     border = 1
 
     # Constructor
@@ -20,7 +20,10 @@ class Rectangle:
 
     # String representation
     def __str__(self) -> str:
-        return f"Rectangle: {self.state} Data(x, y):= {self.data_x}, {self.data_y}, {self.data_properties}"
+        return (
+            f"Rectangle: {self.state} Data(x, y):= {self.data_x}, "
+            f"{self.data_y}, {self.data_properties}"
+        )
 
     def set_state(self, state: bool) -> None:
         self.state = state

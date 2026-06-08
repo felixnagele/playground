@@ -12,7 +12,16 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.py$",
+        "cmd": "ruff format ${file}"
+      }
+    ]
   },
 
   "[cpp]": {

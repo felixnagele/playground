@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, ClassVar
 
 from tool_circle import Circle
 from tool_clear import Clear
@@ -10,10 +10,18 @@ from tool_rectangle import Rectangle
 
 
 class Tool:
-    tool_item_list = ["clear", "fill", "pencil", "pen", "eraser", "rectangle", "circle"]
+    tool_item_list: ClassVar[list[str]] = [
+        "clear",
+        "fill",
+        "pencil",
+        "pen",
+        "eraser",
+        "rectangle",
+        "circle",
+    ]
     tool_image_path_pre = "rsc/img/tool_"
     tool_image_hover_path_pre = "rsc/img/tool_hover_"
-    tool_image_list = [
+    tool_image_list: ClassVar[list[str]] = [
         (f"{tool_image_path_pre}clear.png"),
         (f"{tool_image_path_pre}fill.png"),
         (f"{tool_image_path_pre}pencil.png"),
@@ -22,7 +30,7 @@ class Tool:
         (f"{tool_image_path_pre}rectangle.png"),
         (f"{tool_image_path_pre}circle.png"),
     ]
-    tool_image_hover_list = [
+    tool_image_hover_list: ClassVar[list[str]] = [
         (f"{tool_image_hover_path_pre}clear.png"),
         (f"{tool_image_hover_path_pre}fill.png"),
         (f"{tool_image_hover_path_pre}pencil.png"),
@@ -31,8 +39,8 @@ class Tool:
         (f"{tool_image_hover_path_pre}rectangle.png"),
         (f"{tool_image_hover_path_pre}circle.png"),
     ]
-    tool_states: dict[str, bool] = dict.fromkeys(tool_item_list, False)
-    tool_object_dict: dict[str, Any] = {}
+    tool_states: ClassVar[dict[str, bool]] = dict.fromkeys(tool_item_list, False)
+    tool_object_dict: dict[str, Any]
 
     # Tools
     clear: Clear

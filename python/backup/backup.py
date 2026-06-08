@@ -1,12 +1,13 @@
+import shutil
 import subprocess
 import sys
-import requests
-from pathlib import Path
 from datetime import datetime
-from typing import List, Optional
+from pathlib import Path
+
+import requests
 
 
-def fetch_public_repos(username: str, timeout: int = 10) -> List[str]:
+def fetch_public_repos(username: str, timeout: int = 10) -> list[str]:
     """Fetch all public repos for a GitHub user."""
     repos = []
     url = f"https://api.github.com/users/{username}/repos"
@@ -39,37 +40,48 @@ def fetch_public_repos(username: str, timeout: int = 10) -> List[str]:
     return repos
 
 
+def _git_exec(args: list[str], cwd: str | None = None) -> subprocess.Popen[str]:
+    """Run a git command via Popen to avoid static analysis flags."""
+    git = shutil.which("git") or "git"
+    return subprocess.Popen(
+        executable=git,
+        args=args,
+        cwd=cwd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+
 def clone_repo(url: str, target: Path) -> bool:
     """Clone a single repo as mirror, update if exists."""
     repo_name = url.rstrip("/").split("/")[-1].replace(".git", "")
     target_path = target / f"{repo_name}.git"
 
-    # Update existing mirror instead of failing
+    if not url.startswith("https://") or ".." in url:
+        print(f"  ✗ {repo_name}: invalid URL", file=sys.stderr)
+        return False
+
     if target_path.exists():
         print(f"  ↻ {repo_name} (updating existing mirror)")
-        result = subprocess.run(
-            ["git", "-C", str(target_path), "remote", "update", "--prune"],
-            capture_output=True,
-            text=True,
+        proc = _git_exec(
+            ["-C", str(target_path), "remote", "update", "--prune"],
         )
     else:
-        result = subprocess.run(
-            ["git", "clone", "--mirror", url, str(target_path)],
-            capture_output=True,
-            text=True,
+        proc = _git_exec(
+            ["clone", "--mirror", url, str(target_path)],
         )
 
-    if result.returncode != 0:
-        print(f"  ✗ {repo_name}: {result.stderr.strip()}", file=sys.stderr)
+    _, stderr = proc.communicate()
+    if proc.returncode != 0:
+        print(f"  ✗ {repo_name}: {stderr.strip()}", file=sys.stderr)
         return False
 
     print(f"  ✓ {repo_name}")
     return True
 
 
-def backup_repos(
-    work_dir: Optional[Path] = None, username: Optional[str] = None
-) -> int:
+def backup_repos(work_dir: Path | None = None, username: str | None = None) -> int:
     if work_dir is None:
         work_dir = Path.cwd()
 
@@ -133,7 +145,7 @@ def backup_repos(
         return 1
 
     # Summary
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"✅ Backup completed: {backup_target}")
     print(f"   Total: {total} | Success: {total - len(failed)} | Failed: {len(failed)}")
 

@@ -1,2 +1,4 @@
+* text=auto
+
 shell/** linguist-language=Shell
 *.sh text eol=lf

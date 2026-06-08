@@ -12,9 +12,13 @@ const btn = document.getElementById('counterBtn');
 const display = document.getElementById('counterDisplay');
 
 if (!(btn instanceof HTMLButtonElement)) {
-  console.error('Expected #counterBtn to be an HTMLButtonElement but it was not found or had a different type.');
+  console.error(
+    'Expected #counterBtn to be an HTMLButtonElement but it was not found or had a different type.',
+  );
 } else if (!(display instanceof HTMLDivElement)) {
-  console.error('Expected #counterDisplay to be an HTMLDivElement but it was not found or had a different type.');
+  console.error(
+    'Expected #counterDisplay to be an HTMLDivElement but it was not found or had a different type.',
+  );
 } else {
   btn.addEventListener('click', async () => {
     console.log('Button clicked!');

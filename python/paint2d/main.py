@@ -429,9 +429,11 @@ def main() -> None:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     print("Left mouse button pressed")
-                    # Interacting with menu items if mouse is within at least one menu item
+                    # Interacting with menu items if mouse is within at least
+                    # one menu item
                     menu.collision(mouse_x, mouse_y)
-                    # Interacting with tools menu items if mouse is within at least one tools menu item
+                    # Interacting with tools menu items if mouse is within at
+                    # least one tools menu item
                     tools_menu.collision(mouse_x, mouse_y)
                     # * Size, Color Tool Properties Collisions:
                     # Size
@@ -596,7 +598,8 @@ def paint_surface_update(
         - size_color_field_offset_x
         or height
         > DEFAULT_main_surface_HEIGHT - paint_surface_offset_y - tools_menu_offset_y
-    ):  # If the width and height are greater than the main surface minus menu offset & tools menu offset, do not update the paint surface
+    ):  # If width/height exceed main surface minus menu & tools menu
+        # offset, do not update the paint surface
         return
 
     paint_surface_width = width

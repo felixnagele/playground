@@ -1,6 +1,8 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 from git import Commit, Repo
+
 from print_commits import print_all_commits
 
 
@@ -46,7 +48,8 @@ def test_print_all_commits_bare_repo(
     print_all_commits("/fake/path")
 
     captured = capsys.readouterr()
-    assert "Error: Repository at '/fake/path' is bare or invalid." in captured.out
+    if "Error: Repository at '/fake/path' is bare or invalid." not in captured.out:
+        raise AssertionError(f"Expected error message in {captured.out!r}")
 
 
 @patch("print_commits.Repo")
@@ -58,4 +61,5 @@ def test_print_all_commits_exception_handling(
     print_all_commits("/invalid/path")
 
     captured = capsys.readouterr()
-    assert "An error occurred: Git command failed" in captured.out
+    if "An error occurred: Git command failed" not in captured.out:
+        raise AssertionError(f"Expected error message in {captured.out!r}")

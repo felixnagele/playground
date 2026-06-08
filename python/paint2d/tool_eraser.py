@@ -1,6 +1,6 @@
 # Eraser
 
-from typing import Any
+from typing import Any, ClassVar
 
 import pygame
 
@@ -8,7 +8,7 @@ import pygame
 class Eraser:
     name = "eraser"
     state = False
-    data: list[list[Any]] = []
+    data: ClassVar[list[list[Any]]] = []
     color = (255, 255, 255)
 
     # Constructor

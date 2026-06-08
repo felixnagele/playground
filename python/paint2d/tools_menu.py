@@ -18,20 +18,20 @@ class ToolsMenu:
     offset_x = 125
     offset_y = 20
     border = 1
-    tool_item_list: list[str] = []
-    tool_image_list: list[str] = []
-    tool_image_hover_list: list[str] = []
+    tool_item_list: list[str]
+    tool_image_list: list[str]
+    tool_image_hover_list: list[str]
     tool_item_width = 32
     tool_item_height = 32
     tool_item_gap = 64
-    tool_item_x: list[int] = []
-    tool_item_y: list[int] = []
+    tool_item_x: list[int]
+    tool_item_y: list[int]
     tool_item_active: dict[str, bool]
     tool_item_selected: dict[str, bool]
     tool_item_hover: dict[str, bool]
-    size_field_location_list: list[int] = []
-    color_field_location_list: list[int] = []
-    selected_tool_location_list: list[int] = []
+    size_field_location_list: list[int]
+    color_field_location_list: list[int]
+    selected_tool_location_list: list[int]
     size_field_width = 35
     size_field_height = 35
     color_field_width = 90
@@ -69,7 +69,10 @@ class ToolsMenu:
         self.calculate_tool_coordinates()
 
     def __str__(self) -> str:
-        return f"ToolsMenu: window_width={self.window_width}, window_height={self.window_height}"
+        return (
+            f"ToolsMenu: window_width={self.window_width}, "
+            f"window_height={self.window_height}"
+        )
 
     def update_window(
         self,
@@ -104,7 +107,7 @@ class ToolsMenu:
                 - self.tool_item_gap * (i + 1),
             )
 
-    # Draw the tool items from the tools_item_list and use the images of the tools_image_list
+    # Draw the tool items from the tools_item_list using images from tools_image_list
     def draw(self, pygame: Any) -> None:
         for i in range(len(self.tool_item_list)):
             image = pygame.image.load(self.tool_image_list[i])
@@ -223,7 +226,7 @@ class ToolsMenu:
             ):
                 # Hover current item -> Set the one to True
                 self.tool_item_hover[self.tool_item_list[i]] = True
-                # Reset all other tool states except the one hovered -> Set all except one to False
+                # Reset all other tool states except the one hovered
                 hover_key = self.tool_item_list[i]
                 for j in range(len(self.tool_item_list)):
                     if hover_key != self.tool_item_list[j]:

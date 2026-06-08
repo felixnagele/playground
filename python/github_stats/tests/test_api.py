@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock
-import pytest
+
 import requests
 from pytest import CaptureFixture, MonkeyPatch
 
@@ -27,5 +27,7 @@ def test_github_api_minimal(
         print(f"Error: Network error occurred - {e}")
 
     captured = capsys.readouterr()
-    assert "GitHub API Root Endpoints:" in captured.out
-    assert "foo: bar" in captured.out
+    if "GitHub API Root Endpoints:" not in captured.out:
+        raise AssertionError(f"Expected header in {captured.out!r}")
+    if "foo: bar" not in captured.out:
+        raise AssertionError(f"Expected 'foo: bar' in {captured.out!r}")
