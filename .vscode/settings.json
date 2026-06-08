@@ -15,6 +15,10 @@
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
 
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+
   "emeraldwalk.runonsave": {
     "commands": [
       {
