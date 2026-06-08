@@ -63,9 +63,9 @@
     "@types/node": "^25.2.3",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "^4.1.8",
     "@vitest/eslint-plugin": "^1.6.6",
-    "@vitest/ui": "^4.0.18",
+    "@vitest/ui": "^4.1.8",
     "copyfiles": "^2.4.1",
     "electron": "^40.8.5",
     "electron-builder": "^26.4.0",
@@ -80,6 +80,6 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.52.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.8"
   }
 }
