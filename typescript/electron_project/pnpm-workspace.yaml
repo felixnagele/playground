@@ -1,0 +1,12 @@
+packages:
+  - '.'
+
+registry: https://registry.npmjs.org/
+minimumReleaseAge: 10080
+minimumReleaseAgeStrict: true
+
+allowBuilds:
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  unrs-resolver: true
