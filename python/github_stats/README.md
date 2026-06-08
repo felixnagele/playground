@@ -25,11 +25,17 @@ To prevent accidentally committing sensitive tokens, add `.env` to your `.gitign
 Then, install the required packages:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 Finally, run the script:
 
 ```bash
-python stats.py
+uv run python stats.py
+```
+
+To test the project:
+
+```bash
+uv run pytest
 ```
