@@ -11,6 +11,7 @@
     "ms-python.isort",
     "ms-python.mypy-type-checker",
     "charliermarsh.ruff",
+    "tamasfe.even-better-toml",
     "xaver.clang-format",
     "ms-vscode.cpptools",
     "ms-vscode.cmake-tools"
