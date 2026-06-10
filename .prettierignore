@@ -26,4 +26,10 @@ docs/_site
 .pytest_cache/
 __pycache__/
 *.pyc
+
+.env
+.env*
+*.tsbuildinfo
+pnpm-lock.yaml
+
 uv.lock
