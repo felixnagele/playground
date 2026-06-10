@@ -18,12 +18,6 @@ default-groups = ["dev"]
 # Ignore all releases published in the last 7 days
 exclude-newer = "7 days"
 
-# Allow only the official index (protection against dependency confusion)
-[[tool.uv.index]]
-name = "pypi"
-url = "https://pypi.org/simple"
-default = true
-
 [tool.pytest.ini_options]
 pythonpath = ["."]
 
