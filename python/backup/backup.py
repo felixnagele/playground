@@ -45,7 +45,7 @@ def _git_exec(args: list[str], cwd: str | None = None) -> subprocess.Popen[str]:
     git = shutil.which("git") or "git"
     return subprocess.Popen(
         executable=git,
-        args=args,
+        args=[git, *args],
         cwd=cwd,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,
