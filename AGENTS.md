@@ -22,4 +22,10 @@ See CI workflows (`.github/workflows/`) and the discovery script
 - All code, comments, config, commits, PRs: **English**. Chat may use German.
 - LF line endings enforced for `.sh` files (`.gitattributes`).
 - Pre-commit config is at `configs/pre-commit/` (not root).
-- Review rules in `.github/copilot-instructions.md`.
+
+## Engineering expectations
+
+- Priorities: security, then correctness, minimalism, testability, readability.
+- Security: never hard-code credentials or secrets; flag OWASP-top risks.
+- Tests: deterministic tests for non-trivial logic; run the project's quality gates (format → lint → type-check → tests).
+- Dependencies: minimize external dependencies; justify each addition.
